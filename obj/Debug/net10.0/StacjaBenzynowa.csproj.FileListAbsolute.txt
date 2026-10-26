@@ -12,3 +12,4 @@
 /Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.pdb
 /Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.genruntimeconfig.cache
 /Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/ref/StacjaBenzynowa.dll
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.sourcelink.json

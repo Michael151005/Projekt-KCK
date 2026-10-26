@@ -46,11 +46,21 @@ public class KlientController
                 else
                 {
                     KlientView.PokazKomunikat("Brak wystarczającej ilości paliwa !");
+                    break;
                 }
                 string potwierdzenie = KlientView.PotwierdzTankowanie();
                 if(potwierdzenie == "1")
                 {
                    bool wykonano = TankowanieService.WykonajTankowanie(wybranePaliwo,ilosclitrow);
+                   if(wykonano)
+                    {
+                        KlientView.PokazKomunikat("Tankowanie zakończono pomyślnie");
+                        KlientView.PokazKomunikat("Pozostało paliwa:" +wybranePaliwo.DostepnaIloscPaliwa + " l");
+                    }
+                    else
+                    {
+                        KlientView.PokazKomunikat("Nie udało się zatankować paliwa");
+                    }
                 }
                 else
                 {
