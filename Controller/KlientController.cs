@@ -45,7 +45,7 @@ public class KlientController
                 }
                 else
                 {
-                    KlientView.PokazKomunikat("Brak wystarczającej ilości paliwa !");
+                    KlientView.PokazKomunikat("Brak wystarczającej ilości paliwa!");
                     break;
                 }
                 string potwierdzenie = KlientView.PotwierdzTankowanie();
