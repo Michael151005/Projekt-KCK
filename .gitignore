@@ -1,0 +1,12 @@
+# Pliki kompilacji i pliki tymczasowe
+bin/
+obj/
+
+# Ustawienia środowiska VS Code / Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Pliki logów
+*.log

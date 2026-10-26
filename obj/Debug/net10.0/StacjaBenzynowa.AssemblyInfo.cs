@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StacjaBenzynowa")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e874041f7f7e6cc14e2d1d546e6fbc359abee004")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9b347af955d6a400cc5a71674ebb3709ed4eefb")]
 [assembly: System.Reflection.AssemblyProductAttribute("StacjaBenzynowa")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StacjaBenzynowa")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
