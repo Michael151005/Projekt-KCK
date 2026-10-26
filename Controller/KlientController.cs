@@ -1,6 +1,7 @@
 public class KlientController
 {
     private static MagazynPaliw magazyn = new MagazynPaliw();
+    private static Koszyk koszyk = new Koszyk();
     public static void UruchomPanelKlienta()
     {
         while (true)
@@ -54,8 +55,15 @@ public class KlientController
                    bool wykonano = TankowanieService.WykonajTankowanie(wybranePaliwo,ilosclitrow);
                    if(wykonano)
                     {
+                        PozycjaKoszyka nowaPozycja = new PozycjaKoszyka();
+                        nowaPozycja.Nazwa=wybranePaliwo.NazwaPaliwa;
+                        nowaPozycja.Ilość = ilosclitrow;
+                        nowaPozycja.CenaJednostkowa=wybranePaliwo.CenaZaLitr;
+                        nowaPozycja.Jednostka = "l";
+                        koszyk.DodajPozycje(nowaPozycja);
                         KlientView.PokazKomunikat("Tankowanie zakończono pomyślnie");
-                        KlientView.PokazKomunikat("Pozostało paliwa:" +wybranePaliwo.DostepnaIloscPaliwa + " l");
+                        KlientView.PokazKomunikat("Dodano paliwo do koszyka");
+                        KlientView.PokazKomunikat("Pozostało paliwa: " + wybranePaliwo.DostepnaIloscPaliwa +" l");
                     }
                     else
                     {
@@ -73,6 +81,9 @@ public class KlientController
 
             case "3":
                 KlientView.PokazKomunikat("Wybrano koszyk i platnosc");
+                List<PozycjaKoszyka> pozycje = koszyk.PobierzPozycje();
+                decimal suma = koszyk.ObliczWartoscKoszyka();
+                KlientView.PokazKoszyk(pozycje,suma);
                 break;
 
             case "4":

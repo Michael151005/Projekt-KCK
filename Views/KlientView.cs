@@ -103,4 +103,24 @@ public class KlientView
             Console.WriteLine("Niepoprawny wybór ! Spróbuj ponownie");
         }
     }
+    public static void PokazKoszyk(List<PozycjaKoszyka>pozycje,decimal suma)
+    {
+        Console.WriteLine();
+        Console.WriteLine("======= TWÓJ KOSZYK =======");
+        if(pozycje.Count ==0)
+        {
+            Console.WriteLine("Twój koszyk jest pusty");
+            return;
+        }
+        foreach(PozycjaKoszyka pozycja in pozycje)
+        {
+            Console.WriteLine("---------------------------");
+            Console.WriteLine("Produkt: " + pozycja.Nazwa);
+            Console.WriteLine("Ilość: " + pozycja.Ilość + " " + pozycja.Jednostka);
+            Console.WriteLine("Cena jednostkowa: " + pozycja.CenaJednostkowa + " zł");
+            Console.WriteLine("Wartość: " + (pozycja.Ilość * pozycja.CenaJednostkowa) + " zł");
+        }
+        Console.WriteLine("---------------------------");
+        Console.WriteLine("Łącznie do zapłaty: " + suma + " zł");
+    }
 }
