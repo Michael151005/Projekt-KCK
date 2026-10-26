@@ -1,0 +1,1 @@
+﻿MenuGlowneController.Uruchom();

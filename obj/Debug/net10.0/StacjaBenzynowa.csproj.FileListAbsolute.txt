@@ -1,0 +1,14 @@
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/bin/Debug/net10.0/StacjaBenzynowa
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/bin/Debug/net10.0/StacjaBenzynowa.deps.json
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/bin/Debug/net10.0/StacjaBenzynowa.runtimeconfig.json
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/bin/Debug/net10.0/StacjaBenzynowa.dll
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/bin/Debug/net10.0/StacjaBenzynowa.pdb
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.GeneratedMSBuildEditorConfig.editorconfig
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.AssemblyInfoInputs.cache
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.AssemblyInfo.cs
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.csproj.CoreCompileInputs.cache
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.dll
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/refint/StacjaBenzynowa.dll
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.pdb
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/StacjaBenzynowa.genruntimeconfig.cache
+/Users/michal/Desktop/Osobiste/Uczelnia/Studia IiE/V semestr/Komunikacja człowiek komputer/Projekt/StacjaBenzynowa/obj/Debug/net10.0/ref/StacjaBenzynowa.dll

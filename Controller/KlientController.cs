@@ -1,0 +1,73 @@
+public class KlientController
+{
+    private static MagazynPaliw magazyn = new MagazynPaliw();
+    public static void UruchomPanelKlienta()
+    {
+        while (true)
+        {
+            KlientView.MenuKlienta();
+
+            string wybor = KlientView.PobierzWybor();
+
+            if (wybor == "0")
+            {
+                KlientView.PokazKomunikat(
+                    "Powrot do menu glownego...");
+                return;
+            }
+            ObsluzWyborKlienta(wybor);
+        } 
+    }
+
+    public static void ObsluzWyborKlienta(string wybor)
+    {
+        switch (wybor)
+        {
+            case "1":
+                KlientView.PokazKomunikat("Wybrano tankowanie");
+                List<Paliwo> dostepnePaliwa= magazyn.PobierzPaliwa();
+                KlientView.PokazPaliwa(dostepnePaliwa);
+                string wyborPaliwa = KlientView.PobierzWyborPaliwa();
+                if (wyborPaliwa == "0")
+                {
+                    break;
+                }
+                int numerPaliwa = int.Parse(wyborPaliwa);
+                int indeksPaliwa = numerPaliwa - 1;
+                Paliwo wybranePaliwo=dostepnePaliwa[indeksPaliwa];
+                KlientView.PokazKomunikat("Wybrałeś paliwo: "+wybranePaliwo.NazwaPaliwa);
+                decimal ilosclitrow = KlientView.PobierzIlośćLitrów();
+                bool czyMoznaZatankowac = TankowanieService.CzyMoznaZatankować(ilosclitrow,wybranePaliwo);
+                if(czyMoznaZatankowac)
+                {
+                    decimal koszt = TankowanieService.ObliczKosztTankowania(ilosclitrow,wybranePaliwo.CenaZaLitr);
+                    KlientView.PokazKomunikat("Koszt tankowania: "+ koszt + " zł");
+                }
+                else
+                {
+                    KlientView.PokazKomunikat("Brak wystarczającej ilości paliwa !");
+                }
+                string potwierdzenie = KlientView.PotwierdzTankowanie();
+                if(potwierdzenie == "1")
+                {
+                   bool wykonano = TankowanieService.WykonajTankowanie(wybranePaliwo,ilosclitrow);
+                }
+                else
+                {
+                    KlientView.PokazKomunikat("Tankowanie anulowane");
+                }
+                break;
+            case "2":
+                KlientView.PokazKomunikat("Wybrano sklep");
+                break;
+
+            case "3":
+                KlientView.PokazKomunikat("Wybrano koszyk i platnosc");
+                break;
+
+            case "4":
+                KlientView.PokazKomunikat("Wybrano paragon");
+                break;
+        }
+    }
+}
