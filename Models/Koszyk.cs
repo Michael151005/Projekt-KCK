@@ -1,15 +1,17 @@
-
 public class Koszyk
 {
     private List<PozycjaKoszyka> pozycje = new List<PozycjaKoszyka>();
+
     public List<PozycjaKoszyka> PobierzPozycje()
     {
         return pozycje;
     }
+
     public void DodajPozycje(PozycjaKoszyka pozycja)
     {
         pozycje.Add(pozycja);
     }
+
     public decimal ObliczWartoscKoszyka()
     {
         decimal suma = 0m;
@@ -18,5 +20,10 @@ public class Koszyk
             suma += pozycja.Ilość * pozycja.CenaJednostkowa;
         }
         return suma;
+    }
+
+    public void WyczyscKoszyk()
+    {
+        pozycje.Clear();
     }
 }

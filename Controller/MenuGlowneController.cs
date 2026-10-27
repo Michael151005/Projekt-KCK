@@ -1,32 +1,46 @@
-
 public class MenuGlowneController
 {
+    private static readonly List<OpcjaMenuGlownego> opcje = new()
+    {
+        OpcjaMenuGlownego.Klient,
+        OpcjaMenuGlownego.Pracownik,
+        OpcjaMenuGlownego.Kierownik
+    };
+
     public static void Uruchom()
     {
         while (true)
         {
-            MenuGlowneView.WyswietlMenu();
-            string wybranaRola = MenuGlowneView.PobierzWybor();
-            switch (wybranaRola)
+            MenuGlowneView.WyswietlMenu(opcje);
+            string wybor = MenuGlowneView.PobierzWybor();
+
+            if (wybor == "0")
             {
-                case "1":
-                    MenuGlowneView.PokazKomunikat(
-                        "Zalogowano jako Klient");
+                MenuGlowneView.PokazKomunikat("Dziękujemy za skorzystanie z usług!");
+                return;
+            }
+
+            if (!int.TryParse(wybor, out int numer) || numer < 1 || numer > opcje.Count)
+            {
+                MenuGlowneView.PokazKomunikat("Niepoprawna opcja! Wybierz ponownie.");
+                continue;
+            }
+
+            OpcjaMenuGlownego wybranaOpcja = opcje[numer - 1];
+            switch (wybranaOpcja)
+            {
+                case OpcjaMenuGlownego.Klient:
+                    MenuGlowneView.PokazKomunikat("Zalogowano jako Klient");
                     KlientController.UruchomPanelKlienta();
                     break;
-                case "2":
-                    MenuGlowneView.PokazKomunikat(
-                        "Zalogowano jako Pracownik stacji");
+                case OpcjaMenuGlownego.Pracownik:
+                    MenuGlowneView.PokazKomunikat("Zalogowano jako Pracownik stacji");
                     break;
-                case "3":
-                    MenuGlowneView.PokazKomunikat(
-                        "Zalogowano jako Kierownik stacji");
+                case OpcjaMenuGlownego.Kierownik:
+                    MenuGlowneView.PokazKomunikat("Zalogowano jako Kierownik stacji");
                     break;
-                case "0":
-                    MenuGlowneView.PokazKomunikat(
-                        "Dziekujemy za skorzystanie z uslug!");
-                    return;
             }
         }
     }
 }
+

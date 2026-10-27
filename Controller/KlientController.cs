@@ -42,7 +42,7 @@ public class KlientController
                 KlientView.PokazKomunikat("Wybrano tankowanie");
                 List<Paliwo> paliwa = magazyn.PobierzPaliwa();
                 KlientView.PokazPaliwa(paliwa);
-                string wyborPaliwa = KlientView.PobierzWyborPaliwa();
+                string wyborPaliwa = KlientView.PobierzWyborPaliwa(paliwa.Count);
                 if (wyborPaliwa == "0")
                 {
                     KlientView.PokazKomunikat("Tankowanie anulowane");

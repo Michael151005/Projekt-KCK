@@ -1,4 +1,3 @@
-
 public class KlientView
 {
     public static void PokazMenuOpcji(List<OpcjaKlienta> opcje)
@@ -36,7 +35,7 @@ public class KlientView
         Console.WriteLine("0) Powrót");
         Console.WriteLine("------------------------------");
     }
-    public static string PobierzWyborPaliwa()
+    public static string PobierzWyborPaliwa(int liczbaPaliw)
     {
         while (true)
         {
@@ -48,7 +47,11 @@ public class KlientView
                 return "0";
             }
 
-            if (wybor == "1" || wybor == "2" || wybor == "3" || wybor == "4" || wybor == "0")
+            if (wybor == "0")
+            {
+                return wybor;
+            }
+            if (int.TryParse(wybor, out int numer) && numer >= 1 && numer <= liczbaPaliw)
             {
                 return wybor;
             }
