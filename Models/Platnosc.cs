@@ -1,6 +1,6 @@
 public class Platnosc
 {
-    public decimal kwota {get;set;}
-    public string MetodaPłatności {get;set;}="";
-    public bool CzyOpłacona {get;set;}
+    public decimal Kwota { get; set; }
+    public string MetodaPlatnosci { get; set; } = "";
+    public bool CzyOplacona { get; set; }
 }

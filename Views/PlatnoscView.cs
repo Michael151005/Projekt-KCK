@@ -30,4 +30,8 @@ public class PlatnoscView
             Console.WriteLine("Niepoprawna opcja! Wybierz ponownie.");
         }
     }
+    public static void PokazKomunikat(string komunikat)
+    {
+        Console.WriteLine(komunikat);
+    }
 }

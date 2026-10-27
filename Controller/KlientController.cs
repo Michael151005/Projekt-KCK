@@ -84,6 +84,7 @@ public class KlientController
                 List<PozycjaKoszyka> pozycje = koszyk.PobierzPozycje();
                 decimal suma = koszyk.ObliczWartoscKoszyka();
                 KlientView.PokazKoszyk(pozycje,suma);
+                PlatnośćController.UruchomPlatność(koszyk);
                 break;
 
             case "4":
