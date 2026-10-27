@@ -7,6 +7,6 @@ public class PlatnoscService
             platnosc.CzyOpłacona = true;
             return true;
         }
-        return true;
+        return false;
     }
 }
