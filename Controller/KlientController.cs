@@ -1,73 +1,93 @@
+
 public class KlientController
 {
     private static MagazynPaliw magazyn = new MagazynPaliw();
     private static Koszyk koszyk = new Koszyk();
+    private static HistoriaTransakcji historia = new HistoriaTransakcji();
+
+    private static List<OpcjaKlienta> opcje = new List<OpcjaKlienta>
+    {
+        OpcjaKlienta.Tankowanie,
+        OpcjaKlienta.Sklep,
+        OpcjaKlienta.Koszyk,
+        OpcjaKlienta.Paragon
+    };
     public static void UruchomPanelKlienta()
     {
         while (true)
         {
-            KlientView.MenuKlienta();
-
+            KlientView.PokazMenuOpcji(opcje);
             string wybor = KlientView.PobierzWybor();
-
             if (wybor == "0")
             {
-                KlientView.PokazKomunikat(
-                    "Powrot do menu glownego...");
-                return;
+                KlientView.PokazKomunikat("Powrót do menu głównego...");
+                break;
             }
             ObsluzWyborKlienta(wybor);
-        } 
+        }
     }
-
     public static void ObsluzWyborKlienta(string wybor)
     {
-        switch (wybor)
+        if (!int.TryParse(wybor, out int numer) ||
+            numer < 1 ||
+            numer > opcje.Count)
         {
-            case "1":
+            KlientView.PokazKomunikat("Nieprawidłowa opcja!");
+            return;
+        }
+        OpcjaKlienta wybranaOpcja = opcje[numer - 1];
+        switch (wybranaOpcja)
+        {
+            case OpcjaKlienta.Tankowanie:
                 KlientView.PokazKomunikat("Wybrano tankowanie");
-                List<Paliwo> dostepnePaliwa= magazyn.PobierzPaliwa();
-                KlientView.PokazPaliwa(dostepnePaliwa);
+                List<Paliwo> paliwa = magazyn.PobierzPaliwa();
+                KlientView.PokazPaliwa(paliwa);
                 string wyborPaliwa = KlientView.PobierzWyborPaliwa();
                 if (wyborPaliwa == "0")
                 {
+                    KlientView.PokazKomunikat("Tankowanie anulowane");
                     break;
                 }
-                int numerPaliwa = int.Parse(wyborPaliwa);
-                int indeksPaliwa = numerPaliwa - 1;
-                Paliwo wybranePaliwo=dostepnePaliwa[indeksPaliwa];
-                KlientView.PokazKomunikat("Wybrałeś paliwo: "+wybranePaliwo.NazwaPaliwa);
-                decimal ilosclitrow = KlientView.PobierzIlośćLitrów();
-                bool czyMoznaZatankowac = TankowanieService.CzyMoznaZatankować(ilosclitrow,wybranePaliwo);
-                if(czyMoznaZatankowac)
+                int indeksPaliwa = int.Parse(wyborPaliwa) - 1;
+                Paliwo wybranePaliwo = paliwa[indeksPaliwa];
+                decimal iloscLitrow = KlientView.PobierzIlośćLitrów();
+                if (!TankowanieService.CzyMoznaZatankować(
+                    iloscLitrow, wybranePaliwo))
                 {
-                    decimal koszt = TankowanieService.ObliczKosztTankowania(ilosclitrow,wybranePaliwo.CenaZaLitr);
-                    KlientView.PokazKomunikat("Koszt tankowania: "+ koszt + " zł");
-                }
-                else
-                {
-                    KlientView.PokazKomunikat("Brak wystarczającej ilości paliwa!");
+                    KlientView.PokazKomunikat(
+                        "Nie można zatankować podanej ilości paliwa");
                     break;
                 }
+                decimal koszt = TankowanieService.ObliczKosztTankowania(iloscLitrow, wybranePaliwo.CenaZaLitr);
+                KlientView.PokazKomunikat("Koszt tankowania: " + koszt + " zł");
                 string potwierdzenie = KlientView.PotwierdzTankowanie();
-                if(potwierdzenie == "1")
+                if (potwierdzenie == "1")
                 {
-                   bool wykonano = TankowanieService.WykonajTankowanie(wybranePaliwo,ilosclitrow);
-                   if(wykonano)
+                    bool zatankowano = TankowanieService.WykonajTankowanie(wybranePaliwo, iloscLitrow);
+                    if (zatankowano)
                     {
                         PozycjaKoszyka nowaPozycja = new PozycjaKoszyka();
-                        nowaPozycja.Nazwa=wybranePaliwo.NazwaPaliwa;
-                        nowaPozycja.Ilość = ilosclitrow;
-                        nowaPozycja.CenaJednostkowa=wybranePaliwo.CenaZaLitr;
+
+                        nowaPozycja.Nazwa = wybranePaliwo.NazwaPaliwa;
+                        nowaPozycja.Ilość = iloscLitrow;
+                        nowaPozycja.CenaJednostkowa =
+                            wybranePaliwo.CenaZaLitr;
                         nowaPozycja.Jednostka = "l";
+
                         koszyk.DodajPozycje(nowaPozycja);
-                        KlientView.PokazKomunikat("Tankowanie zakończono pomyślnie");
-                        KlientView.PokazKomunikat("Dodano paliwo do koszyka");
-                        KlientView.PokazKomunikat("Pozostało paliwa: " + wybranePaliwo.DostepnaIloscPaliwa +" l");
+
+                        KlientView.PokazKomunikat(
+                            "Tankowanie zakończono pomyślnie!");
+                        KlientView.PokazKomunikat(
+                            "Dodano paliwo do koszyka");
+                        KlientView.PokazKomunikat(
+                            "Pozostało paliwa: " +
+                            wybranePaliwo.DostepnaIloscPaliwa + " l");
                     }
                     else
                     {
-                        KlientView.PokazKomunikat("Nie udało się zatankować paliwa");
+                        KlientView.PokazKomunikat(
+                            "Nie udało się zatankować paliwa");
                     }
                 }
                 else
@@ -75,19 +95,17 @@ public class KlientController
                     KlientView.PokazKomunikat("Tankowanie anulowane");
                 }
                 break;
-            case "2":
+            case OpcjaKlienta.Sklep:
                 KlientView.PokazKomunikat("Wybrano sklep");
                 break;
-
-            case "3":
-                KlientView.PokazKomunikat("Wybrano koszyk i platnosc");
+            case OpcjaKlienta.Koszyk:
+                KlientView.PokazKomunikat("Wybrano koszyk i płatność");
                 List<PozycjaKoszyka> pozycje = koszyk.PobierzPozycje();
                 decimal suma = koszyk.ObliczWartoscKoszyka();
-                KlientView.PokazKoszyk(pozycje,suma);
-                PlatnośćController.UruchomPlatność(koszyk);
+                KlientView.PokazKoszyk(pozycje, suma);
+                PlatnośćController.UruchomPlatność(koszyk, historia);
                 break;
-
-            case "4":
+            case OpcjaKlienta.Paragon:
                 KlientView.PokazKomunikat("Wybrano paragon");
                 break;
         }

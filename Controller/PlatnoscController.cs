@@ -1,6 +1,6 @@
 public class PlatnośćController
 {
-    public static void UruchomPlatność(Koszyk koszyk)
+    public static void UruchomPlatność(Koszyk koszyk,HistoriaTransakcji historia)
     {
         decimal kwota = koszyk.ObliczWartoscKoszyka();
         if(koszyk.PobierzPozycje().Count ==0)
@@ -34,6 +34,22 @@ public class PlatnośćController
         bool wynik =PlatnoscService.WykonajPlatnosc(platnosc);
         if(wynik)
         {
+            Transakcja transakcja = new Transakcja();
+            transakcja.Kwota = platnosc.Kwota;
+            transakcja.MetodaPlatnosci = platnosc.MetodaPlatnosci;
+            transakcja.DataTransakcji = DateTime.Now;
+            transakcja.Pozycje = new List<PozycjaKoszyka>();
+            foreach(PozycjaKoszyka pozycja in koszyk.PobierzPozycje())
+            {
+                transakcja.Pozycje.Add(new PozycjaKoszyka
+                {
+                    Nazwa = pozycja.Nazwa,
+                    Ilość = pozycja.Ilość,
+                    CenaJednostkowa = pozycja.CenaJednostkowa,
+                    Jednostka = pozycja.Jednostka
+                });
+            }
+            historia.DodajTransakcje(transakcja);
             PlatnoscView.PokazKomunikat("Płatność zakończona pomyślnie!");
             PlatnoscView.PokazKomunikat("Zapłacono: "+platnosc.Kwota + " zł");
             PlatnoscView.PokazKomunikat("Metoda płatności: "+platnosc.MetodaPlatnosci);

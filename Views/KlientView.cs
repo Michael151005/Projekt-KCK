@@ -1,35 +1,19 @@
 
 public class KlientView
 {
-    public static void MenuKlienta()
+    public static void PokazMenuOpcji(List<OpcjaKlienta> opcje)
     {
-        Console.WriteLine();
-        Console.WriteLine("======= MENU KLIENTA =======");
-        Console.WriteLine("1) Tankowanie");
-        Console.WriteLine("2) Sklep");
-        Console.WriteLine("3) Koszyk i platnosc");
-        Console.WriteLine("4) Paragon");
-        Console.WriteLine("0) Powrot do menu glownego");
-    }
+        Console.WriteLine("===== MENU KLIENTA =====");
+        for (int i = 0; i < opcje.Count; i++)
+        {
+            Console.WriteLine((i + 1) + ") " + opcje[i]);
+        }
+        Console.WriteLine("0) Powrót");
+}
     public static string PobierzWybor()
     {
-        while (true)
-        {
-            Console.Write("Twoj wybor: ");
-            string? wybor = Console.ReadLine();
-
-            if (wybor == null)
-            {
-                return "0";
-            }
-
-            if (wybor == "1" || wybor == "2" ||wybor == "3" || wybor == "4" ||wybor == "0")
-            {
-                return wybor;
-            }
-
-            PokazKomunikat("Niepoprawna opcja! Wybierz ponownie.");
-        }
+        Console.Write("Twój wybór: ");
+        return Console.ReadLine() ?? "";
     }
 
     public static void PokazKomunikat(string komunikat)
