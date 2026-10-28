@@ -4,7 +4,7 @@ public class KlientController
     private static MagazynPaliw magazyn = new MagazynPaliw();
     private static Koszyk koszyk = new Koszyk();
     private static HistoriaTransakcji historia = new HistoriaTransakcji();
-
+    private static MagazynProduktow magazynProduktow = new MagazynProduktow();
     private static List<OpcjaKlienta> opcje = new List<OpcjaKlienta>
     {
         OpcjaKlienta.Tankowanie,
@@ -103,7 +103,40 @@ public class KlientController
                 }
                 break;
             case OpcjaKlienta.Sklep:
-                KlientView.PokazKomunikat("Wybrano sklep");
+                List <Produkt> produkty = magazynProduktow.PobierzProdukty();
+                SklepView.PokazProdukty(produkty);
+                string wyborProduktu = SklepView.PobierzWyborProduktu();
+                if(wyborProduktu =="0")
+                {
+                    break;
+                }
+                if (!int.TryParse(wyborProduktu, out int numerProduktu) || numer < 1 || numer > produkty.Count)
+                {
+                    SklepView.PokazKomunikat("Nieprawidłowy wybór produktu!");
+                    break;
+                }
+                Produkt wybranyProdukt = produkty[numer - 1];
+                int ilosc = SklepView.PobierzIlosc();
+                if (!SklepService.CzyMoznaKupic(wybranyProdukt, ilosc))
+                {
+                    SklepView.PokazKomunikat("Brak wystarczającej ilości produktu!");
+                    break;
+                }
+                bool zakupUdany = SklepService.WykonajZakup(wybranyProdukt, ilosc);
+                if(zakupUdany)
+                {
+                    PozycjaKoszyka nowaPozycja = new PozycjaKoszyka();
+                    nowaPozycja.Nazwa = wybranyProdukt.Nazwa;
+                    nowaPozycja.Ilość = ilosc;
+                    nowaPozycja.CenaJednostkowa = wybranyProdukt.Cena;
+                    nowaPozycja.Jednostka = "szt.";
+                    koszyk.DodajPozycje(nowaPozycja);
+                    SklepView.PokazKomunikat("Produkt dodany do koszyka!");
+                }
+                else
+                {
+                    SklepView.PokazKomunikat("Nie udało się kupić produktu.");
+                }
                 break;
             case OpcjaKlienta.Koszyk:
                 KlientView.PokazKomunikat("Wybrano koszyk i płatność");
@@ -113,8 +146,16 @@ public class KlientController
                 PlatnośćController.UruchomPlatność(koszyk, historia);
                 break;
             case OpcjaKlienta.Paragon:
-                KlientView.PokazKomunikat("Wybrano paragon");
+                List<Transakcja>transakcje = historia.PobierzTransakcje();
+                if(transakcje.Count ==0)
+                {
+                    KlientView.PokazKomunikat("Nie ma jeszcze adnych opłaconych transakcji");
+                    break;
+                }
+                Transakcja ostatniaTransakcja= transakcje[transakcje.Count -1];
+                ParagonView.PokazParagon(ostatniaTransakcja);
                 break;
         }
     }
 }
+ 
