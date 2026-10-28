@@ -9,7 +9,7 @@ public class PlatnośćController
         MetodaPlatnosci.Blik
     };
 
-    public static void UruchomPlatność(Koszyk koszyk, HistoriaTransakcji historia)
+    public static void UruchomPlatność(Koszyk koszyk, HistoriaTransakcji historia, ref string pinKarty)
     {
         if (koszyk.PobierzPozycje().Count == 0)
         {
@@ -61,6 +61,63 @@ public class PlatnośćController
             }
 
             PlatnoscView.PokazKomunikat("Kod Blik zaakceptowany. Przetwarzanie płatności...");
+        }
+
+        if (wybranaMetoda == MetodaPlatnosci.Karta)
+        {
+            if (pinKarty == "BRAK")
+            {
+                PlatnoscView.PokazKomunikat("Brak zarejestrowanej karty!");
+                return;
+            }
+
+            if (pinKarty == "ODRZUCONA")
+            {
+                PlatnoscView.PokazKomunikat("Zablokowana karta!");
+                return;
+            }
+
+            int proby = 3;
+            while (proby > 0)
+            {
+                string wpisanyPin = KlientView.PobierzPinPrzyStarcie();
+
+                if (wpisanyPin == "0")
+                {
+                    PlatnoscView.PokazKomunikat("Płatność kartą anulowano.");
+                    return;
+                }
+
+                if (wpisanyPin == pinKarty)
+                {
+                    PlatnoscView.PokazKomunikat("PIN poprawny. Autoryzacja transakcji...");
+                    break;
+                }
+                else
+                {
+                    proby--;
+                    if (proby > 0)
+                    {
+                        PlatnoscView.PokazKomunikat($"Błędny PIN! Pozostałe próby: {proby}");
+                    }
+                    else
+                    {
+                        pinKarty = "ODRZUCONA";
+                        PlatnoscView.PokazKomunikat("KARTA ZABLOKOWANA! Przekroczono limit prób.");
+                        return;
+                    }
+                }
+            }
+        }
+
+        if (wybranaMetoda == MetodaPlatnosci.Gotowka)
+        {
+            if (kwota > 15000m)
+            {
+                Console.WriteLine($"Kwota rachunku ({kwota} zł) przekracza maksymalny limit 15 000 zł!");
+                Console.WriteLine("Wybierz inną metode płatności.");
+                return;
+            }
         }
 
         string nazwaMetody = wybranaMetoda switch

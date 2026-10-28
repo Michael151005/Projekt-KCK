@@ -5,6 +5,8 @@ public class KlientController
     private static Koszyk koszyk = new Koszyk();
     private static HistoriaTransakcji historia = new HistoriaTransakcji();
     private static MagazynProduktow magazynProduktow = new MagazynProduktow();
+    private static string pinKarty = "0";
+
     private static List<OpcjaKlienta> opcje = new List<OpcjaKlienta>
     {
         OpcjaKlienta.Tankowanie,
@@ -12,8 +14,11 @@ public class KlientController
         OpcjaKlienta.Koszyk,
         OpcjaKlienta.Paragon
     };
+
     public static void UruchomPanelKlienta()
     {
+        pinKarty = KlientView.PobierzPinPrzyStarcie();
+
         while (true)
         {
             KlientView.PokazMenuOpcji(opcje);
@@ -26,6 +31,7 @@ public class KlientController
             ObsluzWyborKlienta(wybor);
         }
     }
+
     public static void ObsluzWyborKlienta(string wybor)
     {
         if (!int.TryParse(wybor, out int numer) ||
@@ -140,13 +146,14 @@ public class KlientController
                 List<PozycjaKoszyka> pozycje = koszyk.PobierzPozycje();
                 decimal suma = koszyk.ObliczWartoscKoszyka();
                 KlientView.PokazKoszyk(pozycje, suma);
-                PlatnośćController.UruchomPlatność(koszyk, historia);
+                PlatnośćController.UruchomPlatność(koszyk, historia, ref pinKarty);
                 break;
+
             case OpcjaKlienta.Paragon:
                 List<Transakcja>transakcje = historia.PobierzTransakcje();
                 if (transakcje.Count == 0)
                 {
-                    KlientView.PokazKomunikat("Nie ma jeszcze adnych opłaconych transakcji");
+                    KlientView.PokazKomunikat("Nie ma jeszcze żadnych opłaconych transakcji");
                     break;
                 }
                 Transakcja ostatniaTransakcja = transakcje[transakcje.Count - 1];

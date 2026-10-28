@@ -124,4 +124,26 @@ public class KlientView
         Console.WriteLine("---------------------------");
         Console.WriteLine("Łącznie do zapłaty: " + suma + " zł");
     }
+
+    public static string PobierzPinPrzyStarcie()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.Write("Podaj 4-cyfrowy PIN do swojej karty płatniczej (wpisz 0, jeśli nie masz przy sobie karty): ");
+            string pin = Console.ReadLine() ?? "";
+
+            if (pin == "0")
+            {
+                return "BRAK";
+            }
+
+            if (pin.Length == 4 && int.TryParse(pin, out int pinn))
+            {
+                return pin;
+            }
+
+            Console.WriteLine("Niepoprawny PIN! PIN musi składać się z dokładnie 4 cyfr.");
+        }
+    }
 }
