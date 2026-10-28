@@ -15,7 +15,7 @@ public class MenuGlowneView
                 OpcjaMenuGlownego.Klient => "Klient",
                 OpcjaMenuGlownego.Pracownik => "Pracownik stacji",
                 OpcjaMenuGlownego.Kierownik => "Kierownik stacji",
-                _ => opcje[i].ToString()
+                _ => opcje[i].ToString() 
             };
             Console.WriteLine($"{i + 1}) {nazwa}");
         }
