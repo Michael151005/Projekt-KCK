@@ -59,19 +59,33 @@ public class KlientView
             PokazKomunikat("Niepoprawna opcja! Wybierz ponownie.");
         }
     }
-    public static decimal PobierzIlośćLitrów()
+    public static decimal PobierzIlośćLitrów(decimal dostepnaIlosc)
     {
         while(true)
         {
-          Console.Write("Podaj liczbę litrów: ");
+            Console.Write("Podaj liczbę litrów: ");
             string tekst = Console.ReadLine()?? "";
-            decimal ilość;
-            bool liczba = decimal.TryParse(tekst,out ilość);
-            if(liczba &&ilość>0)
+
+            if (tekst == "0")
             {
-                return ilość;
+                return 0;
             }
-            Console.WriteLine("Niepoprawna ilość! Spróbuj ponownie");  
+
+            if (decimal.TryParse(tekst, out decimal ilość) && ilość > 0)  
+            {
+                if (ilość <= dostepnaIlosc)
+                {
+                    return ilość;
+                }
+                else
+                {
+                    Console.WriteLine($"Niestety, nie mamy tyle paliwa! W zbiorniku jest tylko {dostepnaIlosc} l.");
+                }
+            }
+            else 
+            {
+                Console.WriteLine("Niepoprawna ilość! Podaj poprawna wartość liczbową (użyj przecinka dla ułamków).");
+            }
         } 
     }
     public static string PotwierdzTankowanie()

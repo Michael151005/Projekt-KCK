@@ -48,16 +48,23 @@ public class KlientController
                     KlientView.PokazKomunikat("Tankowanie anulowane");
                     break;
                 }
+
                 int indeksPaliwa = int.Parse(wyborPaliwa) - 1;
                 Paliwo wybranePaliwo = paliwa[indeksPaliwa];
-                decimal iloscLitrow = KlientView.PobierzIlośćLitrów();
-                if (!TankowanieService.CzyMoznaZatankować(
-                    iloscLitrow, wybranePaliwo))
+                decimal iloscLitrow = KlientView.PobierzIlośćLitrów(wybranePaliwo.DostepnaIloscPaliwa);
+
+                if (iloscLitrow == 0) 
                 {
-                    KlientView.PokazKomunikat(
-                        "Nie można zatankować podanej ilości paliwa");
+                    KlientView.PokazKomunikat("Tankowanie anulowane.");
                     break;
                 }
+
+                if (!TankowanieService.CzyMoznaZatankować(iloscLitrow, wybranePaliwo))
+                {
+                    KlientView.PokazKomunikat("Nie można zatankować podanej ilości paliwa");
+                    break;
+                }
+
                 decimal koszt = TankowanieService.ObliczKosztTankowania(iloscLitrow, wybranePaliwo.CenaZaLitr);
                 KlientView.PokazKomunikat("Koszt tankowania: " + koszt + " zł");
                 string potwierdzenie = KlientView.PotwierdzTankowanie();
