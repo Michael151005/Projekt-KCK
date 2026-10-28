@@ -9,4 +9,7 @@
     <None Update="Data/produkty.json"
           CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Data/paliwa.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

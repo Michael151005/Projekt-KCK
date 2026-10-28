@@ -77,19 +77,15 @@ public class KlientController
 
                         nowaPozycja.Nazwa = wybranePaliwo.NazwaPaliwa;
                         nowaPozycja.Ilość = iloscLitrow;
-                        nowaPozycja.CenaJednostkowa =
-                            wybranePaliwo.CenaZaLitr;
+                        nowaPozycja.CenaJednostkowa = wybranePaliwo.CenaZaLitr;
                         nowaPozycja.Jednostka = "l";
 
                         koszyk.DodajPozycje(nowaPozycja);
+                        magazyn.ZapiszPaliwa();
 
-                        KlientView.PokazKomunikat(
-                            "Tankowanie zakończono pomyślnie!");
-                        KlientView.PokazKomunikat(
-                            "Dodano paliwo do koszyka");
-                        KlientView.PokazKomunikat(
-                            "Pozostało paliwa: " +
-                            wybranePaliwo.DostepnaIloscPaliwa + " l");
+                        KlientView.PokazKomunikat( "Tankowanie zakończono pomyślnie!");
+                        KlientView.PokazKomunikat("Dodano paliwo do koszyka");
+                        KlientView.PokazKomunikat( "Pozostało paliwa: " + wybranePaliwo.DostepnaIloscPaliwa + " l");
                     }
                     else
                     {
@@ -131,6 +127,7 @@ public class KlientController
                     nowaPozycja.CenaJednostkowa = wybranyProdukt.Cena;
                     nowaPozycja.Jednostka = "szt.";
                     koszyk.DodajPozycje(nowaPozycja);
+                    magazynProduktow.ZapiszProdukty();
                     SklepView.PokazKomunikat("Produkt dodany do koszyka!");
                 }
                 else
