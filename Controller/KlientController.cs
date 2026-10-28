@@ -110,13 +110,13 @@ public class KlientController
                 {
                     break;
                 }
-                if (!int.TryParse(wyborProduktu, out int numerProduktu) || numer < 1 || numer > produkty.Count)
+                if (!int.TryParse(wyborProduktu, out int numerProduktu) || numerProduktu < 1 || numerProduktu > produkty.Count)
                 {
                     SklepView.PokazKomunikat("Nieprawidłowy wybór produktu!");
                     break;
                 }
-                Produkt wybranyProdukt = produkty[numer - 1];
-                int ilosc = SklepView.PobierzIlosc();
+                Produkt wybranyProdukt = produkty[numerProduktu - 1];
+                int ilosc = SklepView.PobierzIlosc(wybranyProdukt.DostepnaIlosc);
                 if (!SklepService.CzyMoznaKupic(wybranyProdukt, ilosc))
                 {
                     SklepView.PokazKomunikat("Brak wystarczającej ilości produktu!");
@@ -147,12 +147,12 @@ public class KlientController
                 break;
             case OpcjaKlienta.Paragon:
                 List<Transakcja>transakcje = historia.PobierzTransakcje();
-                if(transakcje.Count ==0)
+                if (transakcje.Count == 0)
                 {
                     KlientView.PokazKomunikat("Nie ma jeszcze adnych opłaconych transakcji");
                     break;
                 }
-                Transakcja ostatniaTransakcja= transakcje[transakcje.Count -1];
+                Transakcja ostatniaTransakcja = transakcje[transakcje.Count - 1];
                 ParagonView.PokazParagon(ostatniaTransakcja);
                 break;
         }

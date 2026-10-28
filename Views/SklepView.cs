@@ -4,7 +4,7 @@ public class SklepView
     {
         Console.WriteLine();
         Console.WriteLine("===== SKLEP STACJI =====");
-        for(int i=0;i<produkty.Count;i++)
+        for (int i=0; i<produkty.Count; i++)
         {
             Produkt produkt = produkty[i];
             Console.WriteLine("-------------------------");
@@ -20,17 +20,27 @@ public class SklepView
         Console.Write("Wybierz produkt: ");
         return Console.ReadLine() ?? "";
     }       
-    public static int PobierzIlosc()
+    public static int PobierzIlosc(int dostepnaIlosc)
     {
         while (true)
         {
             Console.Write("Podaj liczbę sztuk: ");
-            if (int.TryParse(Console.ReadLine(), out int ilosc)
-                && ilosc > 0)
+            string wejscie = Console.ReadLine() ?? "";
+
+            if (wejscie == "0") return 0;
+
+            if (int.TryParse(wejscie, out int ilosc) && ilosc > 0)
             {
-                return ilosc;
-            }
+                if (ilosc <= dostepnaIlosc) 
+                {
+                    return ilosc;
+                }
+                else
+                {
+                    Console.WriteLine($"Brak takiej ilości na magazynie! Dostępne {dostepnaIlosc} szt.");
+                }
             Console.WriteLine("Podaj poprawną liczbę sztuk!");
+            }
         }
     }
     public static void PokazKomunikat(string komunikat)
