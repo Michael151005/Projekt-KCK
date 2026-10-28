@@ -28,4 +28,20 @@ public class PlatnoscView
     {
         Console.WriteLine(komunikat);
     }
+
+    public static void PokazKomunikatBlikZTelefonu()
+    {
+        Console.WriteLine();
+        Console.WriteLine("==============================");
+        Console.WriteLine("[Telefon] Wygenerowano nowy kod BLIK!");
+        Console.WriteLine("Otwórz plik 'Data/blik.txt', aby odczytać kod.");
+        Console.WriteLine("==============================");
+        Console.WriteLine();
+    }
+
+    public static string PobierzKodBlik()
+    {
+        Console.Write("Wpisz kod Blik: ");
+        return Console.ReadLine() ?? "";
+    }
 }

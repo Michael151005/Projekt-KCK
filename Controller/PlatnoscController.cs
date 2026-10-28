@@ -1,3 +1,5 @@
+using System.IO;
+
 public class PlatnośćController
 {
     private static readonly List<MetodaPlatnosci> metody = new()
@@ -32,6 +34,35 @@ public class PlatnośćController
         }
 
         MetodaPlatnosci wybranaMetoda = metody[numer - 1];
+
+        if (wybranaMetoda == MetodaPlatnosci.Blik)
+        {
+            Random random = new Random();
+            int wygenerowanyKod = random.Next(100000, 1000000);
+
+            string sciezkaBlik = Path.Combine(Directory.GetCurrentDirectory(), "Data", "blik.txt");
+            string zawartoscPliku = $"=== TWÓJ TELEFON ===\nKOD BLIK: {wygenerowanyKod}\nWażny przez: 2 minuty\n====================";
+            File.WriteAllText(sciezkaBlik, zawartoscPliku);
+
+            PlatnoscView.PokazKomunikatBlikZTelefonu();
+
+            string wpisanyKod = PlatnoscView.PobierzKodBlik();
+
+            if (wpisanyKod == "0")
+            {
+                PlatnoscView.PokazKomunikat("Płatność Blik anulowana.");
+                return;
+            }
+
+            if (wpisanyKod != wygenerowanyKod.ToString())
+            {
+                PlatnoscView.PokazKomunikat("Niepoprawny kod Blik! Transakcja odrzucona.");
+                return;
+            }
+
+            PlatnoscView.PokazKomunikat("Kod Blik zaakceptowany. Przetwarzanie płatności...");
+        }
+
         string nazwaMetody = wybranaMetoda switch
         {
             MetodaPlatnosci.Gotowka => "Gotówka",
