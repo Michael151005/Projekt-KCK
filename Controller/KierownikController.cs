@@ -1,5 +1,7 @@
 public class KierownikController
 {
+    private static MagazynPaliw MagazynPaliw = new MagazynPaliw();
+    private static MagazynProduktow magazynProduktow = new MagazynProduktow();
     private static List<OpcjaKierownika> opcje = new List<OpcjaKierownika>
     {
       OpcjaKierownika.StanMagazynu,
@@ -30,6 +32,9 @@ public class KierownikController
             {
                 case OpcjaKierownika.StanMagazynu:
                     KierownikView.PokazKomunikat("Wybrano stan magazynu");
+                    List<Paliwo> paliwa = MagazynPaliw.PobierzPaliwa();
+                    List<Produkt> produkty = magazynProduktow.PobierzProdukty();
+                    KierownikView.PobierzStanMagazynu(paliwa,produkty);
                     break;
                 case OpcjaKierownika.ZmianaCenPaliw:
                     KierownikView.PokazKomunikat("Wybrano zmianę cen paliw");

@@ -30,5 +30,29 @@ public class KierownikView
     public static void PokazKomunikat(string komunikat)
     {
         Console.WriteLine(komunikat);
-    } 
+    }
+
+    public static void PobierzStanMagazynu(List<Paliwo> paliwa,List<Produkt> produkty)
+    {
+        Console.WriteLine();
+        Console.WriteLine("===== STAN MAGAZYNU =====");
+        Console.WriteLine();
+        Console.WriteLine("--- PALIWA ---");
+        foreach( Paliwo paliwo in paliwa)
+        {
+            Console.WriteLine("Paliwo: " + paliwo.NazwaPaliwa);
+            Console.WriteLine("Dostępna ilość: " + paliwo.DostepnaIloscPaliwa + " l");
+            Console.WriteLine("-----------------------");
+        }
+        
+        Console.WriteLine();
+        Console.WriteLine("--- PRODUKTY SKLEPOWE ---");
+        foreach(Produkt produkt in produkty)
+        {
+            Console.WriteLine("Produkt: " + produkt.Nazwa);
+            Console.WriteLine("Dostępna ilość: " + produkt.DostepnaIlosc + " szt.");
+            Console.WriteLine("-----------------------");
+        }
+    }
+
 }
