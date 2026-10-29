@@ -117,36 +117,43 @@ public class KlientController
                     SklepView.PokazKomunikat("Nieprawidłowy wybór produktu!");
                     break;
                 }
+
                 Produkt wybranyProdukt = produkty[numerProduktu - 1];
                 int ilosc = SklepView.PobierzIlosc(wybranyProdukt.DostepnaIlosc);
-                if (!SklepService.CzyMoznaKupic(wybranyProdukt, ilosc))
+
+                if (ilosc == 0)
+                {
+                    SklepView.PokazKomunikat("Anulowano dodanie produktu.");
+                    break;
+                }
+
+                decimal iloscWKoszyku = koszyk.PobierzPozycje().Where(p => p.Nazwa == wybranyProdukt.Nazwa && p.Jednostka == "szt.").Sum(p => p.Ilość);
+
+                if (iloscWKoszyku + ilosc > wybranyProdukt.DostepnaIlosc)
                 {
                     SklepView.PokazKomunikat("Brak wystarczającej ilości produktu!");
                     break;
                 }
-                bool zakupUdany = SklepService.WykonajZakup(wybranyProdukt, ilosc);
-                if(zakupUdany)
+                
+                PozycjaKoszyka nowaPozycjaProduktu = new PozycjaKoszyka
                 {
-                    PozycjaKoszyka nowaPozycja = new PozycjaKoszyka();
-                    nowaPozycja.Nazwa = wybranyProdukt.Nazwa;
-                    nowaPozycja.Ilość = ilosc;
-                    nowaPozycja.CenaJednostkowa = wybranyProdukt.Cena;
-                    nowaPozycja.Jednostka = "szt.";
-                    koszyk.DodajPozycje(nowaPozycja);
-                    magazynProduktow.ZapiszProdukty();
-                    SklepView.PokazKomunikat("Produkt dodany do koszyka!");
-                }
-                else
-                {
-                    SklepView.PokazKomunikat("Nie udało się kupić produktu.");
-                }
+                    Nazwa = wybranyProdukt.Nazwa,
+                    Ilość = ilosc,
+                    CenaJednostkowa = wybranyProdukt.Cena,
+                    Jednostka = "szt."
+                };
+
+                koszyk.DodajPozycje(nowaPozycjaProduktu);
+
+                SklepView.PokazKomunikat("Dodano produkt do koszyka!");
                 break;
+
             case OpcjaKlienta.Koszyk:
                 KlientView.PokazKomunikat("Wybrano koszyk i płatność");
                 List<PozycjaKoszyka> pozycje = koszyk.PobierzPozycje();
                 decimal suma = koszyk.ObliczWartoscKoszyka();
                 KlientView.PokazKoszyk(pozycje, suma);
-                PlatnośćController.UruchomPlatność(koszyk, historia, ref pinKarty);
+                PlatnośćController.UruchomPlatność(koszyk, historia, ref pinKarty, magazynProduktow);
                 break;
 
             case OpcjaKlienta.Paragon:

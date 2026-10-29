@@ -9,12 +9,31 @@ public class PlatnośćController
         MetodaPlatnosci.Blik
     };
 
-    public static void UruchomPlatność(Koszyk koszyk, HistoriaTransakcji historia, ref string pinKarty)
+    public static void UruchomPlatność(Koszyk koszyk, HistoriaTransakcji historia, ref string pinKarty, MagazynProduktow magazynProduktow)
     {
         if (koszyk.PobierzPozycje().Count == 0)
         {
             PlatnoscView.PokazKomunikat("Koszyk jest pusty");
             return;
+        }
+
+        foreach (var pozycja in koszyk.PobierzPozycje())
+        {
+            if (pozycja.Jednostka != "szt.")
+                continue;
+
+            Produkt? produkt = magazynProduktow.PobierzProdukty()
+                .FirstOrDefault(p => p.Nazwa == pozycja.Nazwa);
+
+            if (produkt == null ||
+                pozycja.Ilość <= 0 ||
+                pozycja.Ilość != decimal.Truncate(pozycja.Ilość) ||
+                produkt.DostepnaIlosc < pozycja.Ilość)
+            {
+                PlatnoscView.PokazKomunikat(
+                    $"Produkt {pozycja.Nazwa} jest niedostępny w wymaganej ilości.");
+                return;
+            }
         }
 
         decimal kwota = koszyk.ObliczWartoscKoszyka();
@@ -138,6 +157,23 @@ public class PlatnośćController
         bool wynik = PlatnoscService.WykonajPlatnosc(platnosc);
         if (wynik)
         {
+            foreach (var pozycja in koszyk.PobierzPozycje())
+            {
+                if (pozycja.Jednostka != "szt.")
+                    continue;
+
+                Produkt? produkt = magazynProduktow.PobierzProdukty()
+                    .FirstOrDefault(p => p.Nazwa == pozycja.Nazwa);
+
+                if (produkt != null)
+                {
+                    SklepService.WykonajZakup(
+                        produkt, (int)pozycja.Ilość);
+                }
+            }
+
+            magazynProduktow.ZapiszProdukty();
+
             Transakcja transakcja = new Transakcja
             {
                 Kwota = platnosc.Kwota,
