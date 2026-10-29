@@ -9,6 +9,8 @@ public class MenuGlowneController
 
     public static void Uruchom()
     {
+        AutoryzacjaService.ZainicjujHasla();
+
         while (true)
         {
             MenuGlowneView.WyswietlMenu(opcje);
@@ -34,10 +36,28 @@ public class MenuGlowneController
                     KlientController.UruchomPanelKlienta();
                     break;
                 case OpcjaMenuGlownego.Pracownik:
-                    MenuGlowneView.PokazKomunikat("Zalogowano jako Pracownik stacji");
+                    string hasloPracownika = MenuGlowneView.PobierzHaslo();
+
+                    if (AutoryzacjaService.WeryfikujHaslo("Pracownik", hasloPracownika))
+                    {
+                        MenuGlowneView.PokazKomunikat("Zalogowano jako Pracownik stacji");
+                    }
+                    else
+                    {
+                        MenuGlowneView.PokazKomunikat("Błędne hasło! Dostęp odmówiony.");
+                    }
                     break;
                 case OpcjaMenuGlownego.Kierownik:
-                    MenuGlowneView.PokazKomunikat("Zalogowano jako Kierownik stacji");
+                    string hasloKierownika = MenuGlowneView.PobierzHaslo();
+
+                    if (AutoryzacjaService.WeryfikujHaslo("Kierownik", hasloKierownika))
+                    {
+                        MenuGlowneView.PokazKomunikat("Zalogowano jako Kierownik stacji");
+                    }
+                    else
+                    {
+                        MenuGlowneView.PokazKomunikat("Błędne hasło! Dostęp odmówiony.");
+                    }
                     break;
             }
         }

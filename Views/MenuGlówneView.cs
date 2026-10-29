@@ -32,4 +32,11 @@ public class MenuGlowneView
     {
         Console.WriteLine(komunikat);
     }
+
+    public static string PobierzHaslo()
+    {
+        Console.WriteLine();
+        Console.Write("Podaj hasło dostępu: ");
+        return Console.ReadLine() ?? "";
+    }
 }
