@@ -94,11 +94,11 @@ public class KlientView
             Console.WriteLine("0) Nie, anuluj");
             Console.Write("Twój wybór: ");
             string wybór = Console.ReadLine() ?? "";
-            if(wybór =="1" || wybór =="0")
+            if (wybór == "1" || wybór =="0")
             {
                 return wybór;
             }
-            Console.WriteLine("Niepoprawny wybór ! Spróbuj ponownie");
+            Console.WriteLine("Niepoprawny wybór! Spróbuj ponownie.");
         }
     }
     public static void PokazKoszyk(List<PozycjaKoszyka>pozycje,decimal suma)
