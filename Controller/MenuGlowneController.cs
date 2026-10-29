@@ -53,6 +53,7 @@ public class MenuGlowneController
                     if (AutoryzacjaService.WeryfikujHaslo("Kierownik", hasloKierownika))
                     {
                         MenuGlowneView.PokazKomunikat("Zalogowano jako Kierownik stacji");
+                        KierownikController.UruchomPanelKierownika();
                     }
                     else
                     {
