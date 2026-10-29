@@ -12,11 +12,11 @@
   {
     "Nazwa": "Woda mineralna",
     "Cena": 4.00,
-    "DostepnaIlosc": 100
+    "DostepnaIlosc": 200
   },
   {
     "Nazwa": "Napoj energetyczny",
     "Cena": 7.50,
-    "DostepnaIlosc": 40
+    "DostepnaIlosc": 240
   }
 ]

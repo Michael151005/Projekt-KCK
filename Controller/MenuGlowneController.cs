@@ -41,6 +41,7 @@ public class MenuGlowneController
                     if (AutoryzacjaService.WeryfikujHaslo("Pracownik", hasloPracownika))
                     {
                         MenuGlowneView.PokazKomunikat("Zalogowano jako Pracownik stacji");
+                        PracownikController.UruchomPanelPracownika();
                     }
                     else
                     {
