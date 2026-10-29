@@ -66,16 +66,13 @@ public class KlientView
             Console.Write("Podaj liczbę litrów: ");
             string tekst = Console.ReadLine()?? "";
 
-            if (tekst == "0")
-            {
-                return 0;
-            }
+            if (tekst == "0") return 0;
 
             if (decimal.TryParse(tekst, out decimal ilość) && ilość > 0)  
             {
                 if (ilość <= dostepnaIlosc)
                 {
-                    return ilość;
+                    return Math.Round(ilość, 2);
                 }
                 else
                 {
@@ -108,7 +105,7 @@ public class KlientView
     {
         Console.WriteLine();
         Console.WriteLine("======= TWÓJ KOSZYK =======");
-        if(pozycje.Count ==0)
+        if (pozycje.Count == 0)
         {
             Console.WriteLine("Twój koszyk jest pusty");
             return;
@@ -119,7 +116,7 @@ public class KlientView
             Console.WriteLine("Produkt: " + pozycja.Nazwa);
             Console.WriteLine("Ilość: " + pozycja.Ilość + " " + pozycja.Jednostka);
             Console.WriteLine("Cena jednostkowa: " + pozycja.CenaJednostkowa + " zł");
-            Console.WriteLine("Wartość: " + (pozycja.Ilość * pozycja.CenaJednostkowa) + " zł");
+            Console.WriteLine("Wartość: " + Math.Round(pozycja.Ilość * pozycja.CenaJednostkowa, 2) + " zł");
         }
         Console.WriteLine("---------------------------");
         Console.WriteLine("Łącznie do zapłaty: " + suma + " zł");

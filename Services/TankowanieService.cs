@@ -1,8 +1,8 @@
 public class TankowanieService
 {
-    public static decimal ObliczKosztTankowania(decimal ilość,decimal cena)
+    public static decimal ObliczKosztTankowania(decimal ilość, decimal cena)
     {
-        return ilość * cena;
+        return Math.Round(ilość * cena, 2);
     }
     public static bool CzyMoznaZatankować(decimal ilość,Paliwo paliwo)
     {
