@@ -11,7 +11,8 @@ public class PracownikController
         OpcjaPracownika.StanMagazynuPaliw,
         OpcjaPracownika.StanMagazynuSklepu,
         OpcjaPracownika.DostawaPaliwa,
-        OpcjaPracownika.DostawaProduktu
+        OpcjaPracownika.DostawaProduktu,
+        OpcjaPracownika.ZmianaHasla
     };
 
     public static void UruchomPanelPracownika()
@@ -100,6 +101,19 @@ public class PracownikController
                 magazynProduktow.ZapiszProdukty();
                 PracownikView.PokazKomunikat($"Dodano {iloscSztuk} szt. produktu {wybranyProdukt.Nazwa}. Nowy stan: {wybranyProdukt.DostepnaIlosc} szt.");
                 break;
+            
+            case OpcjaPracownika.ZmianaHasla:
+                    string noweHaslo = PracownikView.PobierzNoweHaslo();
+                    
+                    if (string.IsNullOrWhiteSpace(noweHaslo))
+                    {
+                        PracownikView.PokazKomunikat("Hasło nie może być puste!");
+                        break;
+                    }
+                    
+                    AutoryzacjaService.ZmienHaslo("Pracownik", noweHaslo);
+                    PracownikView.PokazKomunikat("Hasło pracownika zostało pomyślnie zmienione!");
+                    break;
         }
     }
 }

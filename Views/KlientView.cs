@@ -145,7 +145,7 @@ public class KlientView
         {
             Console.WriteLine();
             Console.Write("Podaj 4-cyfrowy PIN do swojej karty płatniczej (wpisz 0, jeśli nie masz przy sobie karty): ");
-            string pin = Console.ReadLine() ?? "";
+            string pin = InputHelper.PobierzUkrytyTekst();
 
             if (pin == "0")
             {

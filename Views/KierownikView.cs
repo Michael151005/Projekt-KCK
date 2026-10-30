@@ -122,4 +122,10 @@ public class KierownikView
         }
         Console.WriteLine("============================");
     }
+
+    public static string PobierzNoweHaslo()
+    {
+        Console.Write("Podaj nowe hasło kierownika: ");
+        return InputHelper.PobierzUkrytyTekst();
+    }
 }

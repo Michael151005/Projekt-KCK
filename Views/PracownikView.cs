@@ -16,6 +16,7 @@ public class PracownikView
                 OpcjaPracownika.StanMagazynuSklepu => "Stan magazynu sklepu",
                 OpcjaPracownika.DostawaPaliwa => "Domów paliwa",
                 OpcjaPracownika.DostawaProduktu => "Domów produkty do sklepu",
+                OpcjaPracownika.ZmianaHasla => "Zmień hasło pracownika",
                 _ => opcje[i].ToString()
             };
 
@@ -70,5 +71,11 @@ public class PracownikView
 
             Console.WriteLine("Podaj poprawną liczbę całkowitą większą od zera!");
         }
+    }
+
+    public static string PobierzNoweHaslo()
+    {
+        Console.Write("Podaj nowe hasło pracownika: ");
+        return InputHelper.PobierzUkrytyTekst();
     }
 }

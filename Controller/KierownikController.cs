@@ -144,7 +144,7 @@ public class KierownikController
                     List<Transakcja> transakcje = historia.PobierzTransakcje();
                     if (transakcje.Count == 0)
                     {
-                        KierownikView.PokazKomunikat("Brak transakcji do wygenerowania rapoirtu");
+                        KierownikView.PokazKomunikat("Brak transakcji do wygenerowania raportu");
                         break;
                     }
                     RaportSprzedazy raport = RaportSprzedazyService.GenerujRaport(transakcje);
@@ -152,7 +152,16 @@ public class KierownikController
                     break;
                     
                 case OpcjaKierownika.ZmianaHasla:
-                    KierownikView.PokazKomunikat("Wybrano zmianę hasła");
+                    string noweHaslo = PracownikView.PobierzNoweHaslo();
+                    
+                    if (string.IsNullOrWhiteSpace(noweHaslo))
+                    {
+                        PracownikView.PokazKomunikat("Hasło nie może być puste!");
+                        break;
+                    }
+                    
+                    AutoryzacjaService.ZmienHaslo("Kierownik", noweHaslo);
+                    PracownikView.PokazKomunikat("Hasło kierownika zostało pomyślnie zmienione!");
                     break;
             }
         }

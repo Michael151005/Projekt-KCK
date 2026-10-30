@@ -39,6 +39,6 @@ public class MenuGlowneView
     {
         Console.WriteLine();
         Console.Write("Podaj hasło dostępu: ");
-        return Console.ReadLine() ?? "";
+        return InputHelper.PobierzUkrytyTekst();
     }
 }
