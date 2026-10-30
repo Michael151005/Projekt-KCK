@@ -23,34 +23,29 @@ public class HistoriaTransakcji
     public bool DodajTransakcje(Transakcja transakcja)
     {
         List<Transakcja> nowaHistoria = new List<Transakcja>(transakcje);
-
         nowaHistoria.Add(transakcja);
 
-        string json = JsonSerializer.Serialize(nowaHistoria, new JsonSerializerOptions { WriteIndented = true });
-        string? folder = Path.GetDirectoryName(sciezka);
-
-        if (folder != null)
-        {
-            Directory.CreateDirectory(folder);
-        }
-
-        string plikTymczasowy = sciezka + ".tmp";
-
-        File.WriteAllText(plikTymczasowy, json);
-        File.Move(plikTymczasowy, sciezka, true);
-
-        transakcje.Add(transakcja);
-
         try
-        {
+        { 
+
+            string json = JsonSerializer.Serialize(nowaHistoria, new JsonSerializerOptions { WriteIndented = true });
+            string? folder = Path.GetDirectoryName(sciezka);
+
+            if (folder != null)
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            string plikTymczasowy = sciezka + ".tmp";
+            File.WriteAllText(plikTymczasowy, json);
+            File.Move(plikTymczasowy, sciezka, true);
+
+            transakcje.Add(transakcja);
+
             ZapiszParagonDoPliku(transakcja);
             return true;
         }
-        catch (IOException)
-        {
-            return false;
-        }
-        catch (UnauthorizedAccessException)
+        catch (Exception)
         {
             return false;
         }
@@ -100,7 +95,7 @@ public class HistoriaTransakcji
 
                 writer.WriteLine(
                     $"{pozycja.Nazwa} | {pozycja.Ilość} {pozycja.Jednostka} x " +
-                    $"{pozycja.CenaJednostkowa:F2} zl = {wartosc:F2} zl");
+                    $"{pozycja.CenaJednostkowa:F2} zl = {wartosc:F2} zł");
             }
 
             writer.WriteLine("------------------------------");

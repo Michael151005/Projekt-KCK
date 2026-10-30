@@ -1,10 +1,10 @@
-
 public class RaportSprzedazyService
 {
     public static RaportSprzedazy GenerujRaport(List<Transakcja> transakcje)
     {
         RaportSprzedazy raport = new RaportSprzedazy();
         raport.LiczbaTransakcji = transakcje.Count;
+
         foreach (Transakcja transakcja in transakcje)
         {
             raport.lacznyPrzychod += transakcja.Kwota;
