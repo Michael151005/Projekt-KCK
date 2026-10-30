@@ -4,4 +4,5 @@ public class PozycjaKoszyka
     public decimal Ilość { get; set; }
     public decimal CenaJednostkowa { get; set; }
     public string Jednostka { get; set; } = "";
+    public decimal Wartosc => Math.Round(Ilość * CenaJednostkowa, 2);
 }

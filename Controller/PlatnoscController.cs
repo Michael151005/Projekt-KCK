@@ -36,7 +36,7 @@ public class PlatnośćController
 
         decimal kwota = koszyk.ObliczWartoscKoszyka();
         PlatnoscView.PokazMenuPlatnosci(metody);
-        string wybor = PlatnoscView.PobierzWybórPłatności();
+        string wybor = PlatnoscView.PobierzWyborPlatnosci();
 
         if (wybor == "0")
         {

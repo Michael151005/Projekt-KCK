@@ -79,7 +79,7 @@ public class KlientController
 
         int indeksPaliwa = int.Parse(wyborPaliwa) - 1;
         Paliwo wybranePaliwo = paliwa[indeksPaliwa];
-        decimal iloscLitrow = KlientView.PobierzIlośćLitrów(wybranePaliwo.DostepnaIloscPaliwa);
+        decimal iloscLitrow = KlientView.PobierzIloscLitrow();
 
         if (iloscLitrow == 0) 
         {
@@ -89,7 +89,7 @@ public class KlientController
 
         if (!TankowanieService.CzyMoznaZatankować(iloscLitrow, wybranePaliwo))
         {
-            KlientView.PokazKomunikat("Nie można zatankować podanej ilości paliwa");
+            KlientView.PokazKomunikat("Nie można zatankować podanej ilości paliwa!");
             return;
         }
 

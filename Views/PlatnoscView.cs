@@ -21,7 +21,7 @@ public class PlatnoscView
         Console.WriteLine("0) Powrót do koszyka");
     }
 
-    public static string PobierzWybórPłatności()
+    public static string PobierzWyborPlatnosci()
     {
         Console.Write("Twój wybór: ");
         return Console.ReadLine() ?? "0";

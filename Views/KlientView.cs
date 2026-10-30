@@ -68,7 +68,7 @@ public class KlientView
         }
     }
 
-    public static decimal PobierzIlośćLitrów(decimal dostepnaIlosc)
+    public static decimal PobierzIloscLitrow()
     {
         while(true)
         {
@@ -79,14 +79,7 @@ public class KlientView
 
             if (decimal.TryParse(tekst, out decimal ilość) && ilość > 0)  
             {
-                if (ilość <= dostepnaIlosc)
-                {
-                    return Math.Round(ilość, 2);
-                }
-                else
-                {
-                    Console.WriteLine($"Niestety, nie mamy tyle paliwa! W zbiorniku jest tylko {dostepnaIlosc:F2} l.");
-                }
+                return Math.Round(ilość, 2);
             }
             else 
             {
@@ -130,13 +123,12 @@ public class KlientView
             Console.WriteLine("---------------------------");
             Console.WriteLine("Produkt: " + pozycja.Nazwa);
             Console.WriteLine("Ilość: " + pozycja.Ilość + " " + pozycja.Jednostka);
-            Console.WriteLine("Cena jednostkowa: " + pozycja.CenaJednostkowa + " zł");
-            decimal wartosc = Math.Round(pozycja.Ilość * pozycja.CenaJednostkowa, 2) ;
-            Console.WriteLine($"Wartość: {wartosc:F2} zł");
+            Console.WriteLine($"Cena jednostkowa: {pozycja.CenaJednostkowa:F2} zł");
+            Console.WriteLine($"Wartość: {pozycja.Wartosc:F2} zł");
         }
 
         Console.WriteLine("---------------------------");
-        Console.WriteLine("Łącznie do zapłaty: " + suma + " zł");
+        Console.WriteLine($"Łącznie do zapłaty: {suma:F2} zł");
     }
 
     public static string PobierzPinPrzyStarcie()

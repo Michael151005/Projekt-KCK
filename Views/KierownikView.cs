@@ -11,7 +11,7 @@ public class KierownikView
             {
                 OpcjaKierownika.StanMagazynu => "Stan magazynu",
                 OpcjaKierownika.ZmianaCenPaliw => "Zmiana cen paliw",
-                OpcjaKierownika.ZmianaCenProduktow => "Zarządzanie cen produktów",
+                OpcjaKierownika.ZmianaCenProduktow => "Zarządzanie cenami produktów",
                 OpcjaKierownika.DomawianieProduktow => "Zarządzanie produktami",
                 OpcjaKierownika.RaportySprzedazy => "Raporty sprzedaży",
                 OpcjaKierownika.ZmianaHasla => "Zmiana hasła",
@@ -70,7 +70,7 @@ public class KierownikView
             Console.WriteLine(
                 (i + 1) + ") " +
                 paliwa[i].NazwaPaliwa +
-                " - " + paliwa[i].CenaZaLitr + " zł/l");
+                $" - {paliwa[i].CenaZaLitr:F2} zł/l");
         }
 
         Console.WriteLine("0) Powrót");
@@ -86,7 +86,7 @@ public class KierownikView
         Console.WriteLine("===== ZMIANA CEN PRODUKTÓW =====");
         for (int i = 0;i < produkty.Count; i++)
         {
-           Console.WriteLine((i+1) + ") " + produkty[i].Nazwa + "-" + produkty[i].Cena + " zł"); 
+           Console.WriteLine((i+1) + ") " + produkty[i].Nazwa + $"- {produkty[i].Cena:F2} zł"); 
         }
         Console.WriteLine("0) Powrót");
     }
@@ -105,7 +105,7 @@ public class KierownikView
         Console.WriteLine();
         Console.WriteLine("===== RAPORT SPRZEDAŻY =====");
         Console.WriteLine("Liczba transakcji: " + raport.LiczbaTransakcji);
-        Console.WriteLine("Łączny przychód: " + raport.lacznyPrzychod + " zł");
+        Console.WriteLine($"Łączny przychód: {raport.lacznyPrzychod:F2} zł");
         Console.WriteLine("Sprzedane paliwo: " + raport.SprzedaneLitry + " l");
         Console.WriteLine("Sprzedane produkty: " + raport.SprzedaneProdukty + " szt.");
         Console.WriteLine();

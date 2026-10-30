@@ -51,7 +51,7 @@ public class PracownikView
                 return Math.Round(ilosc, 2);
             }
 
-            Console.WriteLine("Podaj poprawną liczbę większa od zera!");
+            Console.WriteLine("Podaj poprawną liczbę większą od zera!");
         }
     }
     

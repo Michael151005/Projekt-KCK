@@ -10,10 +10,9 @@ public class ParagonView
         {
             Console.WriteLine("-----------------------");
             Console.WriteLine("Produkt: " + pozycja.Nazwa);
-            Console.WriteLine("Ilość : " + pozycja.Ilość + " " + pozycja.Jednostka);
+            Console.WriteLine("Ilość: " + pozycja.Ilość + " " + pozycja.Jednostka);
             Console.WriteLine($"Cena jednostkowa: {pozycja.CenaJednostkowa:F2} zł");
-            decimal wartosc = Math.Round(pozycja.Ilość * pozycja.CenaJednostkowa, 2);
-            Console.WriteLine($"Wartość: {wartosc:F2} zł");
+            Console.WriteLine($"Wartość: {pozycja.Wartosc:F2} zł");
         }
         
         Console.WriteLine("-----------------------");

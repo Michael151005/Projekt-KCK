@@ -10,7 +10,7 @@ public class SklepView
             Produkt produkt = produkty[i];
             Console.WriteLine("-------------------------");
             Console.WriteLine((i + 1) + ") " + produkt.Nazwa);
-            Console.WriteLine("Cena: " + produkt.Cena + " zł");
+            Console.WriteLine($"Cena: {produkt.Cena:F2} zł");
             Console.WriteLine("Dostępna ilość: " + produkt.DostepnaIlosc + " szt.");
         }
 
