@@ -100,4 +100,26 @@ public class KierownikView
         }
         Console.WriteLine("0) Powrót");
     }
+    public static void PokazRaportSprzedazy(RaportSprzedazy raport)
+    {
+        Console.WriteLine();
+        Console.WriteLine("===== RAPORT SPRZEDAŻY =====");
+        Console.WriteLine("Liczba transakcji: " + raport.LiczbaTransakcji);
+        Console.WriteLine("Łączny przychód: " + raport.lacznyPrzychod + " zł");
+        Console.WriteLine("Sprzedane paliwo: " + raport.SprzedaneLitry + " l");
+        Console.WriteLine("Sprzedane produkty: " + raport.SprzedaneProdukty + " szt.");
+        Console.WriteLine();
+        Console.WriteLine("--- SPRZEDAŻ PALIW ---");
+        foreach (var paliwo in raport.SprzedanePaliwa)
+        {
+            Console.WriteLine(paliwo.Key + ": " + paliwo.Value + " l");
+        }
+        Console.WriteLine();
+        Console.WriteLine("--- SPRZEDAŻ PRODUKTÓW ---");
+        foreach (var produkt in raport.SprzedaneProdukty)
+        {
+            Console.WriteLine(produkt.Key + ": " + produkt.Value + " szt.");
+        }
+        Console.WriteLine("============================");
+    }
 }

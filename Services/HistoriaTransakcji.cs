@@ -1,29 +1,58 @@
+
+using System.Text.Json;
+
 public class HistoriaTransakcji
 {
-    private List<Transakcja> transakcje = new List<Transakcja>();
+    private List<Transakcja> transakcje;
+    private readonly string sciezka = Path.Combine(AppContext.BaseDirectory,"Data","transakcje.json");
+    public HistoriaTransakcji()
+    {
+        if (File.Exists(sciezka))
+        {
+            string json = File.ReadAllText(sciezka);
 
+            transakcje = JsonSerializer.Deserialize<List<Transakcja>>(json)
+                ?? new List<Transakcja>();
+        }
+        else
+        {
+            transakcje = new List<Transakcja>();
+        }
+    }
     public void DodajTransakcje(Transakcja transakcja)
     {
         transakcje.Add(transakcja);
+
+        ZapiszTransakcje();
+
         ZapiszParagonDoPliku(transakcja);
     }
-
     public List<Transakcja> PobierzTransakcje()
     {
         return transakcje;
     }
-
-    private void ZapiszParagonDoPliku(Transakcja transakcja) 
+    private void ZapiszTransakcje()
     {
-        string folderParagon = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Paragony");
+        string? folder = Path.GetDirectoryName(sciezka);
 
+        if (folder != null)
+        {
+            Directory.CreateDirectory(folder);
+        }
+        string json = JsonSerializer.Serialize(transakcje,new JsonSerializerOptions{WriteIndented = true});
+        File.WriteAllText(sciezka, json);
+    }
+
+    private void ZapiszParagonDoPliku(Transakcja transakcja)
+    {
+        string folderParagon = Path.Combine(Directory.GetCurrentDirectory(),"Data","Paragony");
         if (!Directory.Exists(folderParagon))
         {
             Directory.CreateDirectory(folderParagon);
         }
+        string nazwaPliku =$"Paragon_{transakcja.DataTransakcji:yyyy-MM-dd_HH-mm-ss}.txt";
 
-        string nazwaPliku = $"Paragon_{transakcja.DataTransakcji:yyyy-MM-dd_HH-mm-ss}.txt";
-        string sciezkaCalkowita = Path.Combine(folderParagon, nazwaPliku);
+        string sciezkaCalkowita = Path.Combine(folderParagon,nazwaPliku);
 
         using (StreamWriter writer = new StreamWriter(sciezkaCalkowita))
         {
@@ -37,8 +66,12 @@ public class HistoriaTransakcji
 
             foreach (PozycjaKoszyka pozycja in transakcja.Pozycje)
             {
-                decimal wartosc = Math.Round(pozycja.Ilość * pozycja.CenaJednostkowa, 2);
-                writer.WriteLine($"{pozycja.Nazwa} | {pozycja.Ilość} {pozycja.Jednostka} x {pozycja.CenaJednostkowa:F2} zl = {wartosc:F2} zl");
+                decimal wartosc = Math.Round(
+                    pozycja.Ilość * pozycja.CenaJednostkowa, 2);
+
+                writer.WriteLine(
+                    $"{pozycja.Nazwa} | {pozycja.Ilość} {pozycja.Jednostka} x " +
+                    $"{pozycja.CenaJednostkowa:F2} zl = {wartosc:F2} zl");
             }
 
             writer.WriteLine("------------------------------");

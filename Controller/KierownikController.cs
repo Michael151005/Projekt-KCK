@@ -140,6 +140,15 @@ public class KierownikController
 
                 case OpcjaKierownika.RaportySprzedazy:
                     KierownikView.PokazKomunikat("Wybrano raporty sprzedaży");
+                    HistoriaTransakcji historia = new HistoriaTransakcji();
+                    List<Transakcja> transakcje = historia.PobierzTransakcje();
+                    if (transakcje.Count == 0)
+                    {
+                        KierownikView.PokazKomunikat("Brak transakcji do wygenerowania rapoirtu");
+                        break;
+                    }
+                    RaportSprzedazy raport = RaportSprzedazyService.GenerujRaport(transakcje);
+                    KierownikView.PokazRaportSprzedazy(raport);
                     break;
                     
                 case OpcjaKierownika.ZmianaHasla:
