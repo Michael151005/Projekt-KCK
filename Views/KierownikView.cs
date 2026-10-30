@@ -105,7 +105,7 @@ public class KierownikView
         Console.WriteLine();
         Console.WriteLine("===== RAPORT SPRZEDAŻY =====");
         Console.WriteLine("Liczba transakcji: " + raport.LiczbaTransakcji);
-        Console.WriteLine($"Łączny przychód: {raport.lacznyPrzychod:F2} zł");
+        Console.WriteLine($"Łączny przychód: {raport.LacznyPrzychod:F2} zł");
         Console.WriteLine("Sprzedane paliwo: " + raport.SprzedaneLitry + " l");
         Console.WriteLine("Sprzedane produkty: " + raport.SprzedaneProdukty + " szt.");
         Console.WriteLine();

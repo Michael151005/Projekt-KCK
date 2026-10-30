@@ -7,7 +7,7 @@ public class RaportSprzedazyService
 
         foreach (Transakcja transakcja in transakcje)
         {
-            raport.lacznyPrzychod += transakcja.Kwota;
+            raport.LacznyPrzychod += transakcja.Kwota;
             foreach (PozycjaKoszyka pozycja in transakcja.Pozycje)
             {
                 if (pozycja.Jednostka == "l")

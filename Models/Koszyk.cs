@@ -29,7 +29,7 @@ public class Koszyk
 
         foreach (PozycjaKoszyka pozycja in pozycje)
         {
-            suma += pozycja.Ilość * pozycja.CenaJednostkowa;
+            suma += pozycja.Wartosc;
         }
         
         return Math.Round(suma, 2);

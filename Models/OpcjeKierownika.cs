@@ -5,5 +5,5 @@ public enum OpcjaKierownika
     ZmianaCenProduktow,
     DomawianieProduktow,
     RaportySprzedazy,
-    ZmianaHasla,
+    ZmianaHasla
 }

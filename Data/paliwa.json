@@ -2,21 +2,21 @@
   {
     "NazwaPaliwa": "PB 95",
     "CenaZaLitr": 5.19,
-    "DostepnaIloscPaliwa" : 237.86
+    "DostepnaIloscPaliwa": 999
   },
   {
     "NazwaPaliwa": "PB 98",
     "CenaZaLitr": 5.30,
-    "DostepnaIloscPaliwa": 2065.77
+    "DostepnaIloscPaliwa": 2000
   },
   {
     "NazwaPaliwa": "ON",
     "CenaZaLitr": 6.10,
-    "DostepnaIloscPaliwa": 3490
+    "DostepnaIloscPaliwa": 3000
   },
   {
     "NazwaPaliwa": "LPG",
     "CenaZaLitr": 3.10,
-    "DostepnaIloscPaliwa": 1469.46
+    "DostepnaIloscPaliwa": 1500
   }
 ]
