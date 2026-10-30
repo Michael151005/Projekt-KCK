@@ -11,7 +11,7 @@ public class Koszyk
 
     public void DodajPozycje(PozycjaKoszyka nowaPozycja)
     {
-        var istniejaca = pozycje.FirstOrDefault(p => p.Nazwa.Equals(nowaPozycja.Nazwa, StringComparison.OrdinalIgnoreCase));
+        var istniejaca = pozycje.FirstOrDefault(p => p.Nazwa.Equals(nowaPozycja.Nazwa, StringComparison.OrdinalIgnoreCase) && p.Jednostka == nowaPozycja.Jednostka && p.CenaJednostkowa == nowaPozycja.CenaJednostkowa);
 
         if (istniejaca != null)
         {

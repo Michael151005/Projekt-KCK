@@ -17,15 +17,19 @@ public class PlatnośćController
             return;
         }
 
-        foreach (var pozycja in koszyk.PobierzPozycje())
+        var zamowioneProdukty = koszyk.PobierzPozycje().Where(p => p.Jednostka == "szt.").GroupBy(p => p.Nazwa, StringComparer.OrdinalIgnoreCase).Select(grupa => new
         {
-            if (pozycja.Jednostka != "szt.") continue;
+            Nazwa = grupa.Key,
+            Ilosc = grupa.Sum(p => p.Ilość)
+        }).ToList();
 
-            Produkt? produkt = magazynProduktow.PobierzProdukty().FirstOrDefault(p => p.Nazwa == pozycja.Nazwa);
+        foreach (var zamowienie in zamowioneProdukty)
+        {
+            Produkt? produkt = magazynProduktow.PobierzProdukty().FirstOrDefault(p => p.Nazwa.Equals(zamowienie.Nazwa, StringComparison.OrdinalIgnoreCase));
 
-            if (produkt == null || pozycja.Ilość <= 0 || pozycja.Ilość != decimal.Truncate(pozycja.Ilość) || produkt.DostepnaIlosc < pozycja.Ilość)
+            if (produkt == null || zamowienie.Ilosc <= 0 || zamowienie.Ilosc != decimal.Truncate(zamowienie.Ilosc) || zamowienie.Ilosc > produkt.DostepnaIlosc)
             {
-                PlatnoscView.PokazKomunikat($"Produkt {pozycja.Nazwa} jest niedostępny w wymaganej ilości.");
+                PlatnoscView.PokazKomunikat( "Produkt " + zamowienie.Nazwa + " jest niedostępny w wymaganej ilości.");
                 return;
             }
         }
@@ -153,21 +157,6 @@ public class PlatnośćController
 
         if (wynik)
         {
-            foreach (var pozycja in koszyk.PobierzPozycje())
-            {
-                if (pozycja.Jednostka != "szt.")
-                    continue;
-
-                Produkt? produkt = magazynProduktow.PobierzProdukty().FirstOrDefault(p => p.Nazwa == pozycja.Nazwa);
-
-                if (produkt != null)
-                {
-                    SklepService.WykonajZakup(produkt, (int)pozycja.Ilość);
-                }
-            }
-
-            magazynProduktow.ZapiszProdukty();
-
             Transakcja transakcja = new Transakcja
             {
                 Kwota = platnosc.Kwota,
@@ -186,15 +175,60 @@ public class PlatnośćController
                 });
             }
 
-            historia.DodajTransakcje(transakcja);
-            koszyk.WyczyscKoszyk();
-            PlatnoscView.PokazKomunikat("Płatność zakończona pomyślnie!");
-            PlatnoscView.PokazKomunikat("Zapłacono: " + platnosc.Kwota + " zł");
-            PlatnoscView.PokazKomunikat("Metoda płatności: " + platnosc.MetodaPlatnosci);
+            Dictionary<Produkt, int> poprzednieStany = new Dictionary<Produkt, int>();
+
+            try
+            {
+                foreach (var zamowienie in zamowioneProdukty)
+                {
+                    Produkt produkt = magazynProduktow.PobierzProdukty().First(p => p.Nazwa.Equals( zamowienie.Nazwa, StringComparison.OrdinalIgnoreCase));
+                    poprzednieStany[produkt] = produkt.DostepnaIlosc;
+                    bool zakupUdany = SklepService.WykonajZakup(produkt, (int)zamowienie.Ilosc);
+
+                    if (!zakupUdany)
+                    {
+                        throw new InvalidOperationException("Nie udało się zaktualizować magazynu.");
+                    }
+                }
+
+                magazynProduktow.ZapiszProdukty();
+                bool paragonZapisany = historia.DodajTransakcje(transakcja);
+                koszyk.WyczyscKoszyk();
+                PlatnoscView.PokazKomunikat("Płatność zakończona pomyślnie!");
+                PlatnoscView.PokazKomunikat("Zapłacono: " + platnosc.Kwota + " zł");
+                PlatnoscView.PokazKomunikat("Metoda płatności: " + platnosc.MetodaPlatnosci);
+
+                if (!paragonZapisany)
+                {
+                    PlatnoscView.PokazKomunikat("Transakcja zapisana, ale nie udało się utworzyć paragonu TXT.");
+                }
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException || ex is InvalidOperationException)
+            {
+                foreach (var stan in poprzednieStany)
+                {
+                    stan.Key.DostepnaIlosc = stan.Value;
+                }
+
+                try
+                {
+                    magazynProduktow.ZapiszProdukty();
+                }
+                catch (IOException)
+                {
+                    PlatnoscView.PokazKomunikat("Nie udało się przywrócić pliku magazynu!");
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    PlatnoscView.PokazKomunikat("Brak dostępu do pliku magazynu!");
+                }
+
+                PlatnoscView.PokazKomunikat("Nie udało się zakończyć zapisu transakcji.");
+            }
         }
         else
         {
-            PlatnoscView.PokazKomunikat("Nie udało się zrealizować płatności");
+            PlatnoscView.PokazKomunikat("Nie udało się zrealizować płatności.");
         }
     }
 }

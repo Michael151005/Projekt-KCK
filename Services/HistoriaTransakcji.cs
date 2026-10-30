@@ -1,10 +1,11 @@
 
+using System.Collections;
 using System.Text.Json;
 
 public class HistoriaTransakcji
 {
     private List<Transakcja> transakcje;
-    private readonly string sciezka = Path.Combine(AppContext.BaseDirectory,"Data","transakcje.json");
+    private readonly string sciezka = Path.Combine(Directory.GetCurrentDirectory(), "Data", "transakcje.json");
     public HistoriaTransakcji()
     {
         if (File.Exists(sciezka))
@@ -19,14 +20,42 @@ public class HistoriaTransakcji
             transakcje = new List<Transakcja>();
         }
     }
-    public void DodajTransakcje(Transakcja transakcja)
+    public bool DodajTransakcje(Transakcja transakcja)
     {
+        List<Transakcja> nowaHistoria = new List<Transakcja>(transakcje);
+
+        nowaHistoria.Add(transakcja);
+
+        string json = JsonSerializer.Serialize(nowaHistoria, new JsonSerializerOptions { WriteIndented = true });
+        string? folder = Path.GetDirectoryName(sciezka);
+
+        if (folder != null)
+        {
+            Directory.CreateDirectory(folder);
+        }
+
+        string plikTymczasowy = sciezka + ".tmp";
+
+        File.WriteAllText(plikTymczasowy, json);
+        File.Move(plikTymczasowy, sciezka, true);
+
         transakcje.Add(transakcja);
 
-        ZapiszTransakcje();
-
-        ZapiszParagonDoPliku(transakcja);
+        try
+        {
+            ZapiszParagonDoPliku(transakcja);
+            return true;
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
     }
+    
     public List<Transakcja> PobierzTransakcje()
     {
         return transakcje;

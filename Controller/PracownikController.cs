@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class PracownikController
 {
-    private static MagazynPaliw magazynPaliw = new MagazynPaliw();
-    private static MagazynProduktow magazynProduktow = new MagazynProduktow();
+    private static MagazynPaliw magazynPaliw = WspolneMagazyny.Paliwa;
+    private static MagazynProduktow magazynProduktow = WspolneMagazyny.Produkty;
 
     private static List<OpcjaPracownika> opcje = new List<OpcjaPracownika>
     {
