@@ -76,6 +76,34 @@ public class KierownikController
 
                 case OpcjaKierownika.ZmianaCenProduktow:
                     KierownikView.PokazKomunikat("Wybrano zmianę cen produktów");
+                    List<Produkt> produktyDoZmiany = magazynProduktow.PobierzProdukty();
+                    KierownikView.PokazProduktyDoZmianyCeny(produktyDoZmiany);
+                    string wyborProduktu = KierownikView.PobierzDane("Wybierz produkt: ");
+                    if (wyborProduktu == "0")
+                    {
+                        break;
+                    }
+                    if(!int.TryParse(wyborProduktu, out int numerProduktu) || numerProduktu < 1 || numerProduktu > produktyDoZmiany.Count)
+                    {
+                        KierownikView.PokazKomunikat("Nieprawidłowy wybór produktu");
+                        break;
+                    }
+                    Produkt wybranyProdukt = produktyDoZmiany[numerProduktu - 1];
+                    string wpisanaCenaProduktu = KierownikView.PobierzDane("Podaj nową cenę produktu: ");
+                    if(!decimal.TryParse(wpisanaCenaProduktu, out decimal nowaCenaProduktu))
+                    {
+                        KierownikView.PokazKomunikat("Nieprawidłowy format ceny");
+                        break;
+                    }
+                    bool zmienionoProdukt = KierownikService.ZmienCeneProduktu(wybranyProdukt, nowaCenaProduktu, magazynProduktow);
+                    if(zmienionoProdukt)
+                    {
+                        KierownikView.PokazKomunikat("Cena produktu została zmieniona");
+                    }
+                    else
+                    {
+                        KierownikView.PokazKomunikat("Cena produktu musi być większa od zera");
+                    }
                     break;
 
                 case OpcjaKierownika.ZarzadzanieProduktami:

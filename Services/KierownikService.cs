@@ -8,6 +8,18 @@ public class KierownikService
         }
         decimal poprzedniaCena = paliwo.CenaZaLitr;
         paliwo.CenaZaLitr = nowaCena;
+        magazyn.ZapiszPaliwa();
+        return true;
+    }
+
+    public static bool ZmienCeneProduktu( Produkt produkt, decimal nowaCena, MagazynProduktow magazyn)
+    {
+        if (nowaCena <= 0)
+        {
+            return false;
+        }
+        produkt.Cena = nowaCena;
+        magazyn.ZapiszProdukty();
         return true;
     }
 }

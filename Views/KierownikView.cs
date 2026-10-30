@@ -80,5 +80,15 @@ public class KierownikView
         Console.Write(komunikat);
         return Console.ReadLine() ?? "";
     }
-
+    public static void PokazProduktyDoZmianyCeny (List<Produkt> produkty)
+    {
+        Console.WriteLine();
+        Console.WriteLine("===== ZMIANA CEN PRODUKTÓW =====");
+        for (int i = 0;i < produkty.Count; i++)
+        {
+           Console.WriteLine((i+1) + ") " + produkty[i].Nazwa + "-" + produkty[i].Cena + " zł"); 
+        }
+        Console.WriteLine("0) Powrót");
+    }
+    
 }
