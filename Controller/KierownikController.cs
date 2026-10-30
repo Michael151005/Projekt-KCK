@@ -1,7 +1,7 @@
 public class KierownikController
 {
-    private static MagazynPaliw MagazynPaliw = new MagazynPaliw();
-    private static MagazynProduktow magazynProduktow = new MagazynProduktow();
+    private static MagazynPaliw MagazynPaliw = WspolneMagazyny.Paliwa;
+    private static MagazynProduktow magazynProduktow = WspolneMagazyny.Produkty;
     private static List<OpcjaKierownika> opcje = new List<OpcjaKierownika>
     {
       OpcjaKierownika.StanMagazynu,
@@ -38,6 +38,34 @@ public class KierownikController
                     break;
                 case OpcjaKierownika.ZmianaCenPaliw:
                     KierownikView.PokazKomunikat("Wybrano zmianę cen paliw");
+                    List<Paliwo> paliwaDoZmiany = MagazynPaliw.PobierzPaliwa();
+                    KierownikView.PokazPaliwaDoZmnianyCeny(paliwaDoZmiany);
+                    string wyborPaliwa = KierownikView.PobierzDane("Wybierz paliwo: ");
+                    if (wyborPaliwa == "0")
+                    {
+                        break;
+                    }
+                    if(!int.TryParse(wyborPaliwa,out int numerPaliwa) || numerPaliwa < 1 || numerPaliwa > paliwaDoZmiany.Count)
+                    {
+                        KierownikView.PokazKomunikat("Nieprawidłowy wybór paliwa!");
+                        break;
+                    }
+                    Paliwo wybranePaliwo = paliwaDoZmiany[numerPaliwa - 1];
+                    string wpisanaCena = KierownikView.PobierzDane("Podaj nową cenę za litr: ");
+                    if(!decimal.TryParse(wpisanaCena,out decimal nowaCena))
+                    {
+                        KierownikView.PokazKomunikat("Nieprawidłowy format ceny!");
+                        break;
+                    }
+                    bool zmieniono = KierownikService.ZmienCenePaliwa(wybranePaliwo,nowaCena,MagazynPaliw);
+                    if(zmieniono)
+                    {
+                        KierownikView.PokazKomunikat("Cena paliwa została zmieniona");
+                    }
+                    else
+                    {
+                        KierownikView.PokazKomunikat("Nie udało się zmienić ceny. Sprawdź cene lub zapis pliku");
+                    }
                     break;
                 case OpcjaKierownika.ZmianaCenProduktow:
                     KierownikView.PokazKomunikat("Wybrano zmiannę cen produktów");

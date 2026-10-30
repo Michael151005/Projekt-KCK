@@ -54,5 +54,19 @@ public class KierownikView
             Console.WriteLine("-----------------------");
         }
     }
-
+    public static void PokazPaliwaDoZmnianyCeny (List<Paliwo> paliwa)
+    {
+        Console.WriteLine();
+        Console.WriteLine("===== ZMIANA CEN PALIW =====");
+        for (int i = 0; i < paliwa.Count; i++)
+        {
+            Console.WriteLine(i+1 + ") " + paliwa[i].NazwaPaliwa + " - " + paliwa[i].CenaZaLitr + " zł");
+        }
+        Console.WriteLine("0) Powrót");
+    }
+    public static string PobierzDane(string komunikat)
+    {
+        Console.Write(komunikat);
+        return Console.ReadLine() ?? "" ;
+    }
 }

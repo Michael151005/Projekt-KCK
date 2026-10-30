@@ -1,10 +1,10 @@
 
 public class KlientController
 {
-    private static MagazynPaliw magazyn = new MagazynPaliw();
+    private static MagazynPaliw magazyn = WspolneMagazyny.Paliwa;
     private static Koszyk koszyk = new Koszyk();
     private static HistoriaTransakcji historia = new HistoriaTransakcji();
-    private static MagazynProduktow magazynProduktow = new MagazynProduktow();
+    private static MagazynProduktow magazynProduktow = WspolneMagazyny.Produkty;
     private static string pinKarty = "0";
 
     private static List<OpcjaKlienta> opcje = new List<OpcjaKlienta>
