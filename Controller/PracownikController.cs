@@ -84,6 +84,7 @@ public class PracownikController
                 if (wyborProduktu == "0")
                 {
                     PracownikView.PokazKomunikat("Anulowano dostawę produktu.");
+                    break;
                 }
 
                 if (!int.TryParse(wyborProduktu, out int numerProduktu) || numerProduktu < 1 || numerProduktu > listaProduktow.Count)

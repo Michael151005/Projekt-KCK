@@ -73,7 +73,7 @@ public class KlientController
 
         if (wyborPaliwa == "0")
         {
-            KlientView.PokazKomunikat("Tankowanie anulowane");
+            KlientView.PokazKomunikat("Tankowanie anulowane.");
             return;
         }
 
@@ -94,7 +94,7 @@ public class KlientController
         }
 
         decimal koszt = TankowanieService.ObliczKosztTankowania(iloscLitrow, wybranePaliwo.CenaZaLitr);
-        KlientView.PokazKomunikat("Koszt tankowania: " + koszt + " zł");
+        KlientView.PokazKomunikat("Koszt tankowania: " + koszt + " zł.");
         string potwierdzenie = KlientView.PotwierdzTankowanie();
                 
         if (potwierdzenie == "1")
@@ -113,18 +113,18 @@ public class KlientController
                 koszyk.DodajPozycje(nowaPozycja);
                 magazyn.ZapiszPaliwa();
 
-                KlientView.PokazKomunikat( "Tankowanie zakończono pomyślnie!");
-                KlientView.PokazKomunikat("Dodano paliwo do koszyka");
-                KlientView.PokazKomunikat( "Pozostało paliwa: " + wybranePaliwo.DostepnaIloscPaliwa + " l");
+                KlientView.PokazKomunikat("Tankowanie zakończono pomyślnie!");
+                KlientView.PokazKomunikat("Dodano paliwo do koszyka.");
+                KlientView.PokazKomunikat($"Pozostało paliwa: {wybranePaliwo.DostepnaIloscPaliwa:F2} l.");
             }
             else
             {
-                KlientView.PokazKomunikat("Nie udało się zatankować paliwa");
+                KlientView.PokazKomunikat("Nie udało się zatankować paliwa!");
             }
         }
         else
         {
-            KlientView.PokazKomunikat("Tankowanie anulowane");
+            KlientView.PokazKomunikat("Tankowanie anulowane.");
         }      
     }
 
@@ -177,7 +177,7 @@ public class KlientController
 
     private static void ObsluzKoszyk()
     {
-        KlientView.PokazKomunikat("Wybrano koszyk i płatność");
+        KlientView.PokazKomunikat("Wybrano koszyk i płatność.");
         List<PozycjaKoszyka> pozycje = koszyk.PobierzPozycje();
         decimal suma = koszyk.ObliczWartoscKoszyka();
         KlientView.PokazKoszyk(pozycje, suma);
@@ -190,7 +190,7 @@ public class KlientController
 
         if (transakcje.Count == 0)
         {
-            KlientView.PokazKomunikat("Nie ma jeszcze żadnych opłaconych transakcji");
+            KlientView.PokazKomunikat("Nie ma jeszcze żadnych opłaconych transakcji!");
             return;
         }
 

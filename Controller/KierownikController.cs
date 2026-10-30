@@ -27,7 +27,7 @@ public class KierownikController
 
             if (!int.TryParse(wybor,out int numer) || numer < 1 || numer > opcje.Count)
             {
-                KierownikView.PokazKomunikat("Nieprawidłowa opcja !");
+                KierownikView.PokazKomunikat("Nieprawidłowa opcja!");
                 continue;
             }
 
@@ -36,14 +36,14 @@ public class KierownikController
             switch(wybranaOpcja)
             {
                 case OpcjaKierownika.StanMagazynu:
-                    KierownikView.PokazKomunikat("Wybrano stan magazynu");
+                    KierownikView.PokazKomunikat("Wybrano stan magazynu.");
                     List<Paliwo> paliwa = MagazynPaliw.PobierzPaliwa();
                     List<Produkt> produkty = magazynProduktow.PobierzProdukty();
                     KierownikView.PobierzStanMagazynu(paliwa,produkty);
                     break;
 
                 case OpcjaKierownika.ZmianaCenPaliw:
-                    KierownikView.PokazKomunikat("Wybrano zmianę cen paliw");
+                    KierownikView.PokazKomunikat("Wybrano zmianę cen paliw.");
                     List<Paliwo> paliwaDoZmiany = MagazynPaliw.PobierzPaliwa();
                     KierownikView.PokazPaliwaDoZmianyCeny(paliwaDoZmiany);
                     string wyborPaliwa = KierownikView.PobierzDane("Wybierz paliwo: ");
@@ -66,16 +66,16 @@ public class KierownikController
                     bool zmieniono = KierownikService.ZmienCenePaliwa(wybranePaliwo,nowaCena,MagazynPaliw);
                     if(zmieniono)
                     {
-                        KierownikView.PokazKomunikat("Cena paliwa została zmieniona");
+                        KierownikView.PokazKomunikat("Cena paliwa została zmieniona.");
                     }
                     else
                     {
-                        KierownikView.PokazKomunikat("Nie udało się zmienić ceny. Sprawdź cene lub zapis pliku");
+                        KierownikView.PokazKomunikat("Nie udało się zmienić ceny! Sprawdź cene lub zapis pliku.");
                     }
                     break;
 
                 case OpcjaKierownika.ZmianaCenProduktow:
-                    KierownikView.PokazKomunikat("Wybrano zmianę cen produktów");
+                    KierownikView.PokazKomunikat("Wybrano zmianę cen produktów.");
                     List<Produkt> produktyDoZmiany = magazynProduktow.PobierzProdukty();
                     KierownikView.PokazProduktyDoZmianyCeny(produktyDoZmiany);
                     string wyborProduktu = KierownikView.PobierzDane("Wybierz produkt: ");
@@ -85,66 +85,66 @@ public class KierownikController
                     }
                     if(!int.TryParse(wyborProduktu, out int numerProduktu) || numerProduktu < 1 || numerProduktu > produktyDoZmiany.Count)
                     {
-                        KierownikView.PokazKomunikat("Nieprawidłowy wybór produktu");
+                        KierownikView.PokazKomunikat("Nieprawidłowy wybór produktu!");
                         break;
                     }
                     Produkt wybranyProdukt = produktyDoZmiany[numerProduktu - 1];
                     string wpisanaCenaProduktu = KierownikView.PobierzDane("Podaj nową cenę produktu: ");
                     if(!decimal.TryParse(wpisanaCenaProduktu, out decimal nowaCenaProduktu))
                     {
-                        KierownikView.PokazKomunikat("Nieprawidłowy format ceny");
+                        KierownikView.PokazKomunikat("Nieprawidłowy format ceny!");
                         break;
                     }
                     bool zmienionoProdukt = KierownikService.ZmienCeneProduktu(wybranyProdukt, nowaCenaProduktu, magazynProduktow);
                     if(zmienionoProdukt)
                     {
-                        KierownikView.PokazKomunikat("Cena produktu została zmieniona");
+                        KierownikView.PokazKomunikat("Cena produktu została zmieniona.");
                     }
                     else
                     {
-                        KierownikView.PokazKomunikat("Cena produktu musi być większa od zera");
+                        KierownikView.PokazKomunikat("Cena produktu musi być większa od zera!");
                     }
                     break;
 
                 case OpcjaKierownika.DomawianieProduktow:
-                    KierownikView.PokazKomunikat("Wybrano domawianie produktów");
+                    KierownikView.PokazKomunikat("Wybrano domawianie produktów.");
                     List<Produkt> produktyDoDomowienia = magazynProduktow.PobierzProdukty();
                     KierownikView.PokazProduktyDoDomowienia(produktyDoDomowienia);
-                    string wybierzProduktDoDomowienmia = KierownikView.PobierzDane("Wybierz produkt: ");
-                    if(wybierzProduktDoDomowienmia =="0")
+                    string wybierzProduktDoDomowienia = KierownikView.PobierzDane("Wybierz produkt: ");
+                    if(wybierzProduktDoDomowienia =="0")
                     {
                         break;
                     }
-                    if(!int.TryParse(wybierzProduktDoDomowienmia,out int numerDomawianegoProduktu) || numerDomawianegoProduktu < 1 || numerDomawianegoProduktu > produktyDoDomowienia.Count)
+                    if(!int.TryParse(wybierzProduktDoDomowienia, out int numerDomawianegoProduktu) || numerDomawianegoProduktu < 1 || numerDomawianegoProduktu > produktyDoDomowienia.Count)
                     {
-                        KierownikView.PokazKomunikat("Nieprawidłowy wybór produktu");
+                        KierownikView.PokazKomunikat("Nieprawidłowy wybór produktu!");
                         break;
                     }
                     Produkt produktDoDomowienia = produktyDoDomowienia[numerDomawianegoProduktu-1];
-                    string WpisanaIlosc = KierownikView.PobierzDane("Ile sztuk chcesz domówić ? ");
+                    string WpisanaIlosc = KierownikView.PobierzDane("Ile sztuk chcesz domówić?");
                     if(!int.TryParse(WpisanaIlosc,out int iloscDoDomowienia))
                     {
-                        KierownikView.PokazKomunikat("Podaj poprawną liczbę sztuk");
+                        KierownikView.PokazKomunikat("Podaj poprawną liczbę sztuk!");
                         break;
                     }
                     bool domowiono = KierownikService.DomowProdukt(produktDoDomowienia,iloscDoDomowienia,magazynProduktow);
                     if(domowiono)
                     {
-                        KierownikView.PokazKomunikat("Produkty zostały domówione do magazynu");
+                        KierownikView.PokazKomunikat("Produkty zostały domówione do magazynu.");
                     }
                     else
                     {
-                        KierownikView.PokazKomunikat("Nieprawidłowa ilość produktów");
+                        KierownikView.PokazKomunikat("Nieprawidłowa ilość produktów!");
                     }
                     break;
 
                 case OpcjaKierownika.RaportySprzedazy:
-                    KierownikView.PokazKomunikat("Wybrano raporty sprzedaży");
+                    KierownikView.PokazKomunikat("Wybrano raporty sprzedaży.");
                     HistoriaTransakcji historia = new HistoriaTransakcji();
                     List<Transakcja> transakcje = historia.PobierzTransakcje();
                     if (transakcje.Count == 0)
                     {
-                        KierownikView.PokazKomunikat("Brak transakcji do wygenerowania raportu");
+                        KierownikView.PokazKomunikat("Brak transakcji do wygenerowania raportu!");
                         break;
                     }
                     RaportSprzedazy raport = RaportSprzedazyService.GenerujRaport(transakcje);
@@ -156,12 +156,12 @@ public class KierownikController
                     
                     if (string.IsNullOrWhiteSpace(noweHaslo))
                     {
-                        PracownikView.PokazKomunikat("Hasło nie może być puste!");
+                        KierownikView.PokazKomunikat("Hasło nie może być puste!");
                         break;
                     }
                     
                     AutoryzacjaService.ZmienHaslo("Kierownik", noweHaslo);
-                    PracownikView.PokazKomunikat("Hasło kierownika zostało pomyślnie zmienione!");
+                    KierownikView.PokazKomunikat("Hasło kierownika zostało pomyślnie zmienione!");
                     break;
             }
         }

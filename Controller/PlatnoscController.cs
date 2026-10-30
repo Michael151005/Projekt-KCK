@@ -29,7 +29,7 @@ public class PlatnośćController
 
             if (produkt == null || zamowienie.Ilosc <= 0 || zamowienie.Ilosc != decimal.Truncate(zamowienie.Ilosc) || zamowienie.Ilosc > produkt.DostepnaIlosc)
             {
-                PlatnoscView.PokazKomunikat( "Produkt " + zamowienie.Nazwa + " jest niedostępny w wymaganej ilości.");
+                PlatnoscView.PokazKomunikat("Produkt " + zamowienie.Nazwa + " jest niedostępny w wymaganej ilości!");
                 return;
             }
         }
