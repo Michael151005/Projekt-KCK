@@ -90,7 +90,7 @@ public class KlientView
             }
             else 
             {
-                Console.WriteLine("Niepoprawna ilość! Podaj poprawna wartość liczbową (użyj przecinka dla ułamków).");
+                Console.WriteLine("Niepoprawna ilość! Podaj poprawną wartość liczbową (użyj przecinka dla ułamków).");
             }
         } 
     }

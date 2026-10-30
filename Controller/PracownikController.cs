@@ -87,7 +87,7 @@ public class PracownikController
 
                 if (!int.TryParse(wyborProduktu, out int numerProduktu) || numerProduktu < 1 || numerProduktu > listaProduktow.Count)
                 {
-                    PracownikView.PokazKomunikat("Nieprawidłowa wybór produktu!");
+                    PracownikView.PokazKomunikat("Nieprawidłowy wybór produktu!");
                     break;
                 }
 
