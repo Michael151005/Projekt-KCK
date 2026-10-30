@@ -48,7 +48,7 @@ public class KierownikController
                     break;
 
                 case OpcjaKierownika.ZmianaCenProduktow:
-                    KierownikView.PokazKomunikat("Wybrano zmiannę cen produktów");
+                    KierownikView.PokazKomunikat("Wybrano zmianę cen produktów");
                     break;
 
                 case OpcjaKierownika.ZarzadzanieProduktami:
