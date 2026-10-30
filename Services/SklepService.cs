@@ -1,24 +1,28 @@
 public class SklepService
 {
-    public static bool CzyMoznaKupic(Produkt produkt,int ilosc)
+    public static bool CzyMoznaKupic(Produkt produkt, int ilosc)
     {
-        if(ilosc <=0)
+        if (ilosc <= 0)
         {
             return false;
         }
-        if(produkt.DostepnaIlosc <ilosc)
+
+        if (produkt.DostepnaIlosc < ilosc)
         {
             return false;
         }
+
         return true;
     }
-    public static bool WykonajZakup(Produkt produkt,int ilosc)
+    
+    public static bool WykonajZakup(Produkt produkt, int ilosc)
     {
-        if(!CzyMoznaKupic(produkt,ilosc))
+        if (!CzyMoznaKupic(produkt, ilosc))
         {
             return false;
         }
-        produkt.DostepnaIlosc -=ilosc;
+
+        produkt.DostepnaIlosc -= ilosc;
         return true;
     }
 }

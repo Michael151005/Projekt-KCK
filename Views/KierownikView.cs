@@ -4,6 +4,7 @@ public class KierownikView
     {
         Console.WriteLine();
         Console.WriteLine("===== PANEL KIEROWNIKA =====");
+
         for (int i = 0; i < opcje.Count; i++)
         {
             string nazwa = opcje[i] switch
@@ -16,8 +17,10 @@ public class KierownikView
                 OpcjaKierownika.ZmianaHasla => "Zmiana hasła",
                 _ => opcje[i].ToString()
             };
-            Console.WriteLine((i+1)+ ") " + nazwa);
+
+            Console.WriteLine((i + 1) + ") " + nazwa);
         }
+
         Console.WriteLine("0) Wyloguj");
     }
 
@@ -32,13 +35,14 @@ public class KierownikView
         Console.WriteLine(komunikat);
     }
 
-    public static void PobierzStanMagazynu(List<Paliwo> paliwa,List<Produkt> produkty)
+    public static void PobierzStanMagazynu(List<Paliwo> paliwa, List<Produkt> produkty)
     {
         Console.WriteLine();
         Console.WriteLine("===== STAN MAGAZYNU =====");
         Console.WriteLine();
         Console.WriteLine("--- PALIWA ---");
-        foreach( Paliwo paliwo in paliwa)
+
+        foreach (Paliwo paliwo in paliwa)
         {
             Console.WriteLine("Paliwo: " + paliwo.NazwaPaliwa);
             Console.WriteLine("Dostępna ilość: " + paliwo.DostepnaIloscPaliwa + " l");
@@ -47,26 +51,13 @@ public class KierownikView
         
         Console.WriteLine();
         Console.WriteLine("--- PRODUKTY SKLEPOWE ---");
-        foreach(Produkt produkt in produkty)
+
+        foreach (Produkt produkt in produkty)
         {
             Console.WriteLine("Produkt: " + produkt.Nazwa);
             Console.WriteLine("Dostępna ilość: " + produkt.DostepnaIlosc + " szt.");
             Console.WriteLine("-----------------------");
         }
     }
-    public static void PokazPaliwaDoZmnianyCeny (List<Paliwo> paliwa)
-    {
-        Console.WriteLine();
-        Console.WriteLine("===== ZMIANA CEN PALIW =====");
-        for (int i = 0; i < paliwa.Count; i++)
-        {
-            Console.WriteLine(i+1 + ") " + paliwa[i].NazwaPaliwa + " - " + paliwa[i].CenaZaLitr + " zł");
-        }
-        Console.WriteLine("0) Powrót");
-    }
-    public static string PobierzDane(string komunikat)
-    {
-        Console.Write(komunikat);
-        return Console.ReadLine() ?? "" ;
-    }
+
 }

@@ -4,6 +4,7 @@ public class SklepView
     {
         Console.WriteLine();
         Console.WriteLine("===== SKLEP STACJI =====");
+
         for (int i = 0; i < produkty.Count; i++)
         {
             Produkt produkt = produkty[i];
@@ -12,14 +13,17 @@ public class SklepView
             Console.WriteLine("Cena: " + produkt.Cena + " zł");
             Console.WriteLine("Dostępna ilość: " + produkt.DostepnaIlosc + " szt.");
         }
+
         Console.WriteLine("-------------------------");
         Console.WriteLine("0) Powrót");
     }
+    
     public static string PobierzWyborProduktu()
     {   
         Console.Write("Wybierz produkt: ");
         return Console.ReadLine() ?? "";
-    }       
+    }     
+
     public static int PobierzIlosc(int dostepnaIlosc)
     {
         while (true)
@@ -50,6 +54,7 @@ public class SklepView
             return ilosc;
         }
     }
+    
     public static void PokazKomunikat(string komunikat)
     {
         Console.WriteLine(komunikat);

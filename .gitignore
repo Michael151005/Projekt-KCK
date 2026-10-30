@@ -8,5 +8,9 @@ obj/
 *.user
 *.suo
 
+# Pliki systemowe
+.DS_Store
+*.DS_Store
+
 # Pliki logów
 *.log

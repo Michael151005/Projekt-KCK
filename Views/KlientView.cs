@@ -3,12 +3,15 @@ public class KlientView
     public static void PokazMenuOpcji(List<OpcjaKlienta> opcje)
     {
         Console.WriteLine("===== MENU KLIENTA =====");
+
         for (int i = 0; i < opcje.Count; i++)
         {
             Console.WriteLine((i + 1) + ") " + opcje[i]);
         }
+
         Console.WriteLine("0) Powrót");
-}
+    }
+
     public static string PobierzWybor()
     {
         Console.Write("Twój wybór: ");
@@ -19,22 +22,26 @@ public class KlientView
     {
         Console.WriteLine(komunikat);
     }
+
     public static void PokazPaliwa(List<Paliwo> paliwa)
     {
         int numer = 1;
         Console.WriteLine("======= DOSTĘPNE PALIWA ======");
+
         foreach (Paliwo paliwo in paliwa)
         {
             Console.WriteLine("------------------------------");
-            Console.WriteLine(numer +") Paliwo: " + paliwo.NazwaPaliwa);
-            Console.WriteLine("Cena za litr: " + paliwo.CenaZaLitr + " zł");
-            Console.WriteLine("Dostępna ilość: " + paliwo.DostepnaIloscPaliwa + " l");
+            Console.WriteLine(numer + ") Paliwo: " + paliwo.NazwaPaliwa);
+            Console.WriteLine($"Cena za litr: {paliwo.CenaZaLitr:F2} zł");
+            Console.WriteLine($"Dostępna ilość: {paliwo.DostepnaIloscPaliwa:F2} l");
             numer++;
         }
+
         Console.WriteLine("------------------------------");
         Console.WriteLine("0) Powrót");
         Console.WriteLine("------------------------------");
     }
+
     public static string PobierzWyborPaliwa(int liczbaPaliw)
     {
         while (true)
@@ -51,6 +58,7 @@ public class KlientView
             {
                 return wybor;
             }
+
             if (int.TryParse(wybor, out int numer) && numer >= 1 && numer <= liczbaPaliw)
             {
                 return wybor;
@@ -59,6 +67,7 @@ public class KlientView
             PokazKomunikat("Niepoprawna opcja! Wybierz ponownie.");
         }
     }
+
     public static decimal PobierzIlośćLitrów(decimal dostepnaIlosc)
     {
         while(true)
@@ -76,48 +85,56 @@ public class KlientView
                 }
                 else
                 {
-                    Console.WriteLine($"Niestety, nie mamy tyle paliwa! W zbiorniku jest tylko {dostepnaIlosc} l.");
+                    Console.WriteLine($"Niestety, nie mamy tyle paliwa! W zbiorniku jest tylko {dostepnaIlosc:F2} l.");
                 }
             }
             else 
             {
-                Console.WriteLine("Niepoprawna ilość! Podaj poprawna wartość liczbową (użyj przecinka dla ułamków).");
+                Console.WriteLine("Niepoprawna ilość! Podaj poprawną wartość liczbową (użyj przecinka dla ułamków).");
             }
         } 
     }
+
     public static string PotwierdzTankowanie()
     {
         while(true)
         {
-            Console.WriteLine("Czy chcesz potwierdzić tankowanie ?");
-            Console.WriteLine("1) Tak,potwierdzam");
+            Console.WriteLine("Czy chcesz potwierdzić tankowanie?");
+            Console.WriteLine("1) Tak, potwierdzam");
             Console.WriteLine("0) Nie, anuluj");
             Console.Write("Twój wybór: ");
             string wybór = Console.ReadLine() ?? "";
-            if (wybór == "1" || wybór =="0")
+
+            if (wybór == "1" || wybór == "0")
             {
                 return wybór;
             }
+
             Console.WriteLine("Niepoprawny wybór! Spróbuj ponownie.");
         }
     }
-    public static void PokazKoszyk(List<PozycjaKoszyka>pozycje,decimal suma)
+
+    public static void PokazKoszyk(List<PozycjaKoszyka>pozycje, decimal suma)
     {
         Console.WriteLine();
         Console.WriteLine("======= TWÓJ KOSZYK =======");
+
         if (pozycje.Count == 0)
         {
             Console.WriteLine("Twój koszyk jest pusty");
             return;
         }
-        foreach(PozycjaKoszyka pozycja in pozycje)
+
+        foreach (PozycjaKoszyka pozycja in pozycje)
         {
             Console.WriteLine("---------------------------");
             Console.WriteLine("Produkt: " + pozycja.Nazwa);
             Console.WriteLine("Ilość: " + pozycja.Ilość + " " + pozycja.Jednostka);
             Console.WriteLine("Cena jednostkowa: " + pozycja.CenaJednostkowa + " zł");
-            Console.WriteLine("Wartość: " + Math.Round(pozycja.Ilość * pozycja.CenaJednostkowa, 2) + " zł");
+            decimal wartosc = Math.Round(pozycja.Ilość * pozycja.CenaJednostkowa, 2) ;
+            Console.WriteLine($"Wartość: {wartosc:F2} zł");
         }
+
         Console.WriteLine("---------------------------");
         Console.WriteLine("Łącznie do zapłaty: " + suma + " zł");
     }
@@ -135,7 +152,7 @@ public class KlientView
                 return "BRAK";
             }
 
-            if (pin.Length == 4 && int.TryParse(pin, out int pinn))
+            if (pin.Length == 4 && int.TryParse(pin, out _))
             {
                 return pin;
             }

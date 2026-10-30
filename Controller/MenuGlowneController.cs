@@ -29,12 +29,14 @@ public class MenuGlowneController
             }
 
             OpcjaMenuGlownego wybranaOpcja = opcje[numer - 1];
+
             switch (wybranaOpcja)
             {
                 case OpcjaMenuGlownego.Klient:
                     MenuGlowneView.PokazKomunikat("Zalogowano jako Klient");
                     KlientController.UruchomPanelKlienta();
                     break;
+
                 case OpcjaMenuGlownego.Pracownik:
                     string hasloPracownika = MenuGlowneView.PobierzHaslo();
 
@@ -48,6 +50,7 @@ public class MenuGlowneController
                         MenuGlowneView.PokazKomunikat("Błędne hasło! Dostęp odmówiony.");
                     }
                     break;
+                    
                 case OpcjaMenuGlownego.Kierownik:
                     string hasloKierownika = MenuGlowneView.PobierzHaslo();
 

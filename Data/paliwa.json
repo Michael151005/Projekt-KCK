@@ -2,7 +2,11 @@
   {
     "NazwaPaliwa": "PB 95",
     "CenaZaLitr": 5.19,
+<<<<<<< HEAD
     "DostepnaIloscPaliwa": 28687.00
+=======
+    "DostepnaIloscPaliwa": 28713.88
+>>>>>>> 835e10d0469aa0a988d655d98e3f1ca2ec829986
   },
   {
     "NazwaPaliwa": "PB 98",

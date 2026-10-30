@@ -40,7 +40,7 @@ public class PracownikView
     {
         while (true)
         {
-            Console.Write("Podaj ilosc dostarczonych litrów: ");
+            Console.Write("Podaj ilość dostarczonych litrów: ");
             string wejscie = Console.ReadLine() ?? "";
             
             if (wejscie == "0") return 0;
@@ -58,7 +58,7 @@ public class PracownikView
     {
         while (true)
         {
-            Console.Write("Podaj ilosc dostarczonych sztuk: ");
+            Console.Write("Podaj ilość dostarczonych sztuk: ");
             string wejscie = Console.ReadLine() ?? "";
             
             if (wejscie == "0") return 0;
@@ -68,7 +68,7 @@ public class PracownikView
                 return ilosc;
             }
 
-            Console.WriteLine("Podaj poprawną liczbę całkowitą większa od zera!");
+            Console.WriteLine("Podaj poprawną liczbę całkowitą większą od zera!");
         }
     }
 }

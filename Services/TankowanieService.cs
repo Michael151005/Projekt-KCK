@@ -4,9 +4,10 @@ public class TankowanieService
     {
         return Math.Round(ilość * cena, 2);
     }
+
     public static bool CzyMoznaZatankować(decimal ilość,Paliwo paliwo)
     {
-        if(paliwo.DostepnaIloscPaliwa >= ilość && ilość >0)
+        if (paliwo.DostepnaIloscPaliwa >= ilość && ilość > 0)
         {
             return true;
         }
@@ -15,13 +16,15 @@ public class TankowanieService
             return false;
         }
     }
+
     public static bool WykonajTankowanie(Paliwo paliwo, decimal ilość)
     {
-        if(CzyMoznaZatankować(ilość,paliwo))
+        if (CzyMoznaZatankować(ilość, paliwo))
         {
             paliwo.DostepnaIloscPaliwa -= ilość;
             return true;
         }
+
         return false;
     }
 }
