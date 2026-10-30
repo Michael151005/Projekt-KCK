@@ -17,8 +17,10 @@ public class MenuGlowneView
                 OpcjaMenuGlownego.Kierownik => "Kierownik stacji",
                 _ => opcje[i].ToString() 
             };
+
             Console.WriteLine($"{i + 1}) {nazwa}");
         }
+        
         Console.WriteLine("0) Wyjście");
     }
 

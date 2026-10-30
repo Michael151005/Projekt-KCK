@@ -4,6 +4,7 @@ public class PlatnoscView
     {
         Console.WriteLine();
         Console.WriteLine("===== METODA PŁATNOŚCI =====");
+        
         for (int i = 0; i < metody.Count; i++)
         {
             string nazwa = metody[i] switch
@@ -13,8 +14,10 @@ public class PlatnoscView
                 MetodaPlatnosci.Blik => "BLIK",
                 _ => metody[i].ToString()
             };
+
             Console.WriteLine($"{i + 1}) {nazwa}");
         }
+
         Console.WriteLine("0) Powrót do koszyka");
     }
 

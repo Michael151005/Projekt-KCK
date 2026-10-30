@@ -26,10 +26,12 @@ public class Koszyk
     public decimal ObliczWartoscKoszyka()
     {
         decimal suma = 0m;
+
         foreach (PozycjaKoszyka pozycja in pozycje)
         {
             suma += pozycja.Ilość * pozycja.CenaJednostkowa;
         }
+        
         return Math.Round(suma, 2);
     }
 
