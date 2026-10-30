@@ -7,7 +7,7 @@ public class KierownikController
         OpcjaKierownika.StanMagazynu,
         OpcjaKierownika.ZmianaCenPaliw,
         OpcjaKierownika.ZmianaCenProduktow,
-        OpcjaKierownika.ZarzadzanieProduktami,
+        OpcjaKierownika.DomawianieProduktow,
         OpcjaKierownika.RaportySprzedazy,
         OpcjaKierownika.ZmianaHasla  
     };
@@ -106,8 +106,36 @@ public class KierownikController
                     }
                     break;
 
-                case OpcjaKierownika.ZarzadzanieProduktami:
-                    KierownikView.PokazKomunikat("Wybrano zarządzanie produktami");
+                case OpcjaKierownika.DomawianieProduktow:
+                    KierownikView.PokazKomunikat("Wybrano domawianie produktów");
+                    List<Produkt> produktyDoDomowienia = magazynProduktow.PobierzProdukty();
+                    KierownikView.PokazProduktyDoDomowienia(produktyDoDomowienia);
+                    string wybierzProduktDoDomowienmia = KierownikView.PobierzDane("Wybierz produkt: ");
+                    if(wybierzProduktDoDomowienmia =="0")
+                    {
+                        break;
+                    }
+                    if(!int.TryParse(wybierzProduktDoDomowienmia,out int numerDomawianegoProduktu) || numerDomawianegoProduktu < 1 || numerDomawianegoProduktu > produktyDoDomowienia.Count)
+                    {
+                        KierownikView.PokazKomunikat("Nieprawidłowy wybór produktu");
+                        break;
+                    }
+                    Produkt produktDoDomowienia = produktyDoDomowienia[numerDomawianegoProduktu-1];
+                    string WpisanaIlosc = KierownikView.PobierzDane("Ile sztuk chcesz domówić ? ");
+                    if(!int.TryParse(WpisanaIlosc,out int iloscDoDomowienia))
+                    {
+                        KierownikView.PokazKomunikat("Podaj poprawną liczbę sztuk");
+                        break;
+                    }
+                    bool domowiono = KierownikService.DomowProdukt(produktDoDomowienia,iloscDoDomowienia,magazynProduktow);
+                    if(domowiono)
+                    {
+                        KierownikView.PokazKomunikat("Produkty zostały domówione do magazynu");
+                    }
+                    else
+                    {
+                        KierownikView.PokazKomunikat("Nieprawidłowa ilość produktów");
+                    }
                     break;
 
                 case OpcjaKierownika.RaportySprzedazy:

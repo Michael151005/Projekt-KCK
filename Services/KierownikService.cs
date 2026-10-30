@@ -22,4 +22,18 @@ public class KierownikService
         magazyn.ZapiszProdukty();
         return true;
     }
+    public static bool DomowProdukt( Produkt produkt, int ilosc, MagazynProduktow magazyn)
+    {
+        if (ilosc <= 0)
+        {
+            return false;
+        }
+        if(ilosc > int.MaxValue- produkt.DostepnaIlosc)
+        {
+            return false;
+        }
+        produkt.DostepnaIlosc += ilosc;
+        magazyn.ZapiszProdukty();
+        return true;
+    }
 }

@@ -3,7 +3,7 @@ public enum OpcjaKierownika
     StanMagazynu,
     ZmianaCenPaliw,
     ZmianaCenProduktow,
-    ZarzadzanieProduktami,
+    DomawianieProduktow,
     RaportySprzedazy,
     ZmianaHasla,
 }

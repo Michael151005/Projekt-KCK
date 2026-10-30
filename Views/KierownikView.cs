@@ -12,7 +12,7 @@ public class KierownikView
                 OpcjaKierownika.StanMagazynu => "Stan magazynu",
                 OpcjaKierownika.ZmianaCenPaliw => "Zmiana cen paliw",
                 OpcjaKierownika.ZmianaCenProduktow => "Zarządzanie cen produktów",
-                OpcjaKierownika.ZarzadzanieProduktami => "Zarządzanie produktami",
+                OpcjaKierownika.DomawianieProduktow => "Zarządzanie produktami",
                 OpcjaKierownika.RaportySprzedazy => "Raporty sprzedaży",
                 OpcjaKierownika.ZmianaHasla => "Zmiana hasła",
                 _ => opcje[i].ToString()
@@ -90,5 +90,14 @@ public class KierownikView
         }
         Console.WriteLine("0) Powrót");
     }
-    
+    public static void PokazProduktyDoDomowienia(List<Produkt> produkty)
+    {
+        Console.WriteLine();
+        Console.WriteLine("===== DOMAWIANIE PRODUKTÓW =====");
+        for (int i = 0;i <produkty.Count;i++)
+        {
+            Console.WriteLine((i+1) + ") " + produkty[i].Nazwa + " - stan " + produkty[i].DostepnaIlosc + " szt.");
+        }
+        Console.WriteLine("0) Powrót");
+    }
 }
