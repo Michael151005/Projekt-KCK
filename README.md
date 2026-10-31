@@ -2,6 +2,11 @@
 
 Aplikacja konsolowa napisana w języku C# (.NET), symulująca pełny system obsługi stacji benzynowej. Projekt został zrealizowany z zachowaniem wzorca projektowego **MVC (Model-View-Controller)** oraz podziałem na warstwy biznesowe (Services).
 
+## Interfejs Użytkownika (UI/UX)
+W projekcie zrezygnowano ze standardowego wpisywania komend liczbowych na rzecz nowoczesnego interfejsu TUI (Text-based User Interface):
+- **Interaktywna nawigacja:** Obsługa menu odbywa się płynnie za pomocą **strzałek (góra/dół)** oraz zatwierdzania klawiszem **Enter**.
+- **Wydajne odświeżanie:** Zastosowano częściowe odświeżanie ekranu (nadpisywanie pozycji kursora), co całkowicie eliminuje efekt "migającej konsoli" znany z prostych aplikacji używających ciągłego czyszczenia ekranu.
+
 ## Funkcjonalności według ról
 
 System dzieli się na 3 główne panele dostępowe:
