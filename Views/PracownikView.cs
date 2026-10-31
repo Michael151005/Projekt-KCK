@@ -3,33 +3,28 @@ using System.Collections.Generic;
 
 public class PracownikView
 {
-    public static void PokazOpcjeMenu(List<OpcjaPracownika> opcje)
+    public static string PobierzWyborMenuPracownika(List<OpcjaPracownika> opcje)
     {
-        Console.WriteLine();
-        Console.WriteLine("===== PANEL PRACOWNIKA =====");
+        string[] opcjeNapisy = new string[opcje.Count + 1];
 
         for (int i = 0; i < opcje.Count; i++)
         {
-            string nazwa = opcje[i] switch
+            opcjeNapisy[i] = opcje[i] switch
             {
                 OpcjaPracownika.StanMagazynuPaliw => "Stan magazynu paliw",
                 OpcjaPracownika.StanMagazynuSklepu => "Stan magazynu sklepu",
-                OpcjaPracownika.DostawaPaliwa => "Domów paliwa",
-                OpcjaPracownika.DostawaProduktu => "Domów produkty do sklepu",
-                OpcjaPracownika.ZmianaHasla => "Zmień hasło pracownika",
+                OpcjaPracownika.DostawaPaliwa => "Zamów paliwo na stacje",
+                OpcjaPracownika.DostawaProduktu => "Zamów produkty do sklepu",
+                OpcjaPracownika.ZmianaHasla => "Zmień swoje hasło",
                 _ => opcje[i].ToString()
             };
-
-            Console.WriteLine((i + 1) + ") " + nazwa);
         }
 
-        Console.WriteLine("0) Powrót do menu głównego");
-    }
+        opcjeNapisy[opcje.Count] = "Wyloguj się";
+        int indeks = UIHelper.PokazInteraktywneMenu("PANEL PRACOWNIKA", opcjeNapisy);
 
-    public static string PobierzWybor()
-    {
-        Console.Write("Twój wybór: ");
-        return Console.ReadLine() ?? "";
+        if (indeks == opcje.Count) return "0";
+        return (indeks + 1).ToString();
     }
 
     public static void PokazKomunikat(string komunikat)

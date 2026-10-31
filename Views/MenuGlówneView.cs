@@ -1,33 +1,32 @@
+using System.Collections.Generic;
+
 public class MenuGlowneView
 {
-    public static void WyswietlMenu(List<OpcjaMenuGlownego> opcje)
+    public static string PobierzWyborMenuGlownego(List<OpcjaMenuGlownego> opcje)
     {
-        Console.WriteLine();
-        Console.WriteLine("==============================");
-        Console.WriteLine("STACJA BENZYNOWA");
-        Console.WriteLine("==============================");
-        Console.WriteLine("Wybierz swoją rolę:");
+        string[] opcjeNapisy = new string[opcje.Count + 1];
 
         for (int i = 0; i < opcje.Count; i++)
         {
-            string nazwa = opcje[i] switch
+            opcjeNapisy[i] = opcje[i] switch
             {
-                OpcjaMenuGlownego.Klient => "Klient",
-                OpcjaMenuGlownego.Pracownik => "Pracownik stacji",
-                OpcjaMenuGlownego.Kierownik => "Kierownik stacji",
+                OpcjaMenuGlownego.Klient => "Zaloguj jako Klient",
+                OpcjaMenuGlownego.Pracownik => "Zaloguj jako Pracownik stacji",
+                OpcjaMenuGlownego.Kierownik => "Zaloguj jako Kierownik stacji",
                 _ => opcje[i].ToString() 
             };
-
-            Console.WriteLine($"{i + 1}) {nazwa}");
         }
         
-        Console.WriteLine("0) Wyjście");
-    }
+        opcjeNapisy[opcje.Count] = "Wyjście z programu";
 
-    public static string PobierzWybor()
-    {
-        Console.Write("Twój wybór: ");
-        return Console.ReadLine() ?? "0";
+        int indeksWyboru = UIHelper.PokazInteraktywneMenu("WYBIERZ SWOJĄ ROLĘ", opcjeNapisy);
+
+        if (indeksWyboru == opcje.Count)
+        {
+            return "0";
+        }
+
+        return (indeksWyboru + 1).ToString();
     }
 
     public static void PokazKomunikat(string komunikat)

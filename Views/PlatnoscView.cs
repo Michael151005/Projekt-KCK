@@ -1,30 +1,25 @@
 public class PlatnoscView
 {
-    public static void PokazMenuPlatnosci(List<MetodaPlatnosci> metody)
+    public static string PobierzWyborMenuPlatnosci(List<MetodaPlatnosci> metody)
     {
-        Console.WriteLine();
-        Console.WriteLine("===== METODA PŁATNOŚCI =====");
-        
+        string[] opcjeNapisy = new string[metody.Count + 1];
+
         for (int i = 0; i < metody.Count; i++)
         {
-            string nazwa = metody[i] switch
+            opcjeNapisy[i] = metody[i] switch
             {
-                MetodaPlatnosci.Gotowka => "Gotówka",
+                MetodaPlatnosci.Gotowka => "Płatność Gotówką",
                 MetodaPlatnosci.Karta => "Karta płatnicza",
-                MetodaPlatnosci.Blik => "BLIK",
+                MetodaPlatnosci.Blik => "Płatność BLIK",
                 _ => metody[i].ToString()
             };
-
-            Console.WriteLine($"{i + 1}) {nazwa}");
         }
 
-        Console.WriteLine("0) Powrót do koszyka");
-    }
+        opcjeNapisy[metody.Count] = "Anuluj płatność";
+        int indeks = UIHelper.PokazInteraktywneMenu("WYBIERZ METODĘ PŁATNOŚCI", opcjeNapisy);
 
-    public static string PobierzWyborPlatnosci()
-    {
-        Console.Write("Twój wybór: ");
-        return Console.ReadLine() ?? "0";
+        if (indeks == metody.Count) return "0";
+        return (indeks + 1).ToString();
     }
 
     public static void PokazKomunikat(string komunikat)

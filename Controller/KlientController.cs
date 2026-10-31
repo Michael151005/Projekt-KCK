@@ -21,8 +21,7 @@ public class KlientController
 
         while (true)
         {
-            KlientView.PokazMenuOpcji(opcje);
-            string wybor = KlientView.PobierzWybor();
+            string wybor = KlientView.PobierzWyborMenuKlienta(opcje);
 
             if (wybor == "0")
             {
@@ -66,7 +65,6 @@ public class KlientController
 
     private static void ObsluzTankowanie()
     {
-        KlientView.PokazKomunikat("Wybrano tankowanie");
         List<Paliwo> paliwa = magazyn.PobierzPaliwa();
         KlientView.PokazPaliwa(paliwa);
         string wyborPaliwa = KlientView.PobierzWyborPaliwa(paliwa.Count);
@@ -177,10 +175,18 @@ public class KlientController
 
     private static void ObsluzKoszyk()
     {
-        KlientView.PokazKomunikat("Wybrano koszyk i płatność.");
         List<PozycjaKoszyka> pozycje = koszyk.PobierzPozycje();
+
+        if (pozycje.Count == 0)
+        {
+            UIHelper.PokazBlad("Koszyk jest pusty!");
+            return;
+        }
+
+        Console.Clear();
         decimal suma = koszyk.ObliczWartoscKoszyka();
         KlientView.PokazKoszyk(pozycje, suma);
+        UIHelper.PoczekajNaKlawisz();
         PlatnośćController.UruchomPlatność(koszyk, historia, ref pinKarty, magazynProduktow);
     }
 
@@ -195,6 +201,8 @@ public class KlientController
         }
 
         Transakcja ostatniaTransakcja = transakcje[transakcje.Count - 1];
+        Console.Clear();
         ParagonView.PokazParagon(ostatniaTransakcja);
+        UIHelper.PoczekajNaKlawisz();
     }
 }

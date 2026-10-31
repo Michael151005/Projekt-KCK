@@ -1,33 +1,28 @@
 public class KierownikView
 {
-    public static void PokazMenu(List<OpcjaKierownika> opcje)
+    public static string PobierzWyborMenuKierownika(List<OpcjaKierownika> opcje)
     {
-        Console.WriteLine();
-        Console.WriteLine("===== PANEL KIEROWNIKA =====");
+        string[] opcjeNapisy = new string[opcje.Count + 1];
 
         for (int i = 0; i < opcje.Count; i++)
         {
-            string nazwa = opcje[i] switch
+            opcjeNapisy[i] = opcje[i] switch
             {
-                OpcjaKierownika.StanMagazynu => "Stan magazynu",
+                OpcjaKierownika.StanMagazynu => "Stan magazynu paliw i sklepu",
                 OpcjaKierownika.ZmianaCenPaliw => "Zmiana cen paliw",
-                OpcjaKierownika.ZmianaCenProduktow => "Zarządzanie cenami produktów",
-                OpcjaKierownika.DomawianieProduktow => "Zarządzanie produktami",
-                OpcjaKierownika.RaportySprzedazy => "Raporty sprzedaży",
-                OpcjaKierownika.ZmianaHasla => "Zmiana hasła",
+                OpcjaKierownika.ZmianaCenProduktow => "Zmiana cen produktów",
+                OpcjaKierownika.DomawianieProduktow => "Domówianie produktów",
+                OpcjaKierownika.RaportySprzedazy => "Raport sprzedaży",
+                OpcjaKierownika.ZmianaHasla => "Zmień swoje hasło",
                 _ => opcje[i].ToString()
             };
-
-            Console.WriteLine((i + 1) + ") " + nazwa);
         }
 
-        Console.WriteLine("0) Wyloguj");
-    }
+        opcjeNapisy[opcje.Count] = "Wyloguj się";
+        int indeks = UIHelper.PokazInteraktywneMenu("PANEL KIEROWNIKA", opcjeNapisy);
 
-    public static string PobierzWybor()
-    {
-        Console.Write("Twój wybór: ");
-        return Console.ReadLine() ?? "";
+        if (indeks == opcje.Count) return "0";
+        return (indeks + 1).ToString();
     }
 
     public static void PokazKomunikat(string komunikat)
@@ -75,29 +70,36 @@ public class KierownikView
 
         Console.WriteLine("0) Powrót");
     }
+
     public static string PobierzDane(string komunikat)
     {
         Console.Write(komunikat);
         return Console.ReadLine() ?? "";
     }
+
     public static void PokazProduktyDoZmianyCeny (List<Produkt> produkty)
     {
         Console.WriteLine();
         Console.WriteLine("===== ZMIANA CEN PRODUKTÓW =====");
-        for (int i = 0;i < produkty.Count; i++)
+
+        for (int i = 0; i < produkty.Count; i++)
         {
-           Console.WriteLine((i+1) + ") " + produkty[i].Nazwa + $"- {produkty[i].Cena:F2} zł"); 
+           Console.WriteLine((i+1) + ") " + produkty[i].Nazwa + $" - {produkty[i].Cena:F2} zł"); 
         }
+
         Console.WriteLine("0) Powrót");
     }
+
     public static void PokazProduktyDoDomowienia(List<Produkt> produkty)
     {
         Console.WriteLine();
         Console.WriteLine("===== DOMAWIANIE PRODUKTÓW =====");
-        for (int i = 0;i <produkty.Count;i++)
+
+        for (int i = 0; i < produkty.Count; i++)
         {
             Console.WriteLine((i+1) + ") " + produkty[i].Nazwa + " - stan " + produkty[i].DostepnaIlosc + " szt.");
         }
+        
         Console.WriteLine("0) Powrót");
     }
     public static void PokazRaportSprzedazy(RaportSprzedazy raport)
@@ -107,7 +109,7 @@ public class KierownikView
         Console.WriteLine("Liczba transakcji: " + raport.LiczbaTransakcji);
         Console.WriteLine($"Łączny przychód: {raport.LacznyPrzychod:F2} zł");
         Console.WriteLine("Sprzedane paliwo: " + raport.SprzedaneLitry + " l");
-        Console.WriteLine("Sprzedane produkty: " + raport.SprzedaneProdukty + " szt.");
+        Console.WriteLine("Sprzedane produkty: " + raport.SprzedaneSztuki + " szt.");
         Console.WriteLine();
         Console.WriteLine("--- SPRZEDAŻ PALIW ---");
         foreach (var paliwo in raport.SprzedanePaliwa)

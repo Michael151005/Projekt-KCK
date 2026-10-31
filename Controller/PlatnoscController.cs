@@ -35,8 +35,7 @@ public class PlatnośćController
         }
 
         decimal kwota = koszyk.ObliczWartoscKoszyka();
-        PlatnoscView.PokazMenuPlatnosci(metody);
-        string wybor = PlatnoscView.PobierzWyborPlatnosci();
+        string wybor = PlatnoscView.PobierzWyborMenuPlatnosci(metody);
 
         if (wybor == "0")
         {
@@ -84,13 +83,13 @@ public class PlatnośćController
         {
             if (pinKarty == "BRAK")
             {
-                PlatnoscView.PokazKomunikat("Brak zarejestrowanej karty!");
+                UIHelper.PokazBlad("Brak zarejestrowanej karty!");
                 return;
             }
 
             if (pinKarty == "ODRZUCONA")
             {
-                PlatnoscView.PokazKomunikat("Zablokowana karta!");
+                UIHelper.PokazBlad("Zablokowana karta!");
                 return;
             }
 
@@ -121,7 +120,7 @@ public class PlatnośćController
                     else
                     {
                         pinKarty = "ODRZUCONA";
-                        PlatnoscView.PokazKomunikat("KARTA ZABLOKOWANA! Przekroczono limit prób.");
+                        UIHelper.PokazBlad("KARTA ZABLOKOWANA! Przekroczono limit prób.");
                         return;
                     }
                 }
@@ -197,6 +196,7 @@ public class PlatnośćController
                 PlatnoscView.PokazKomunikat("Płatność zakończona pomyślnie!");
                 PlatnoscView.PokazKomunikat("Zapłacono: " + platnosc.Kwota + " zł");
                 PlatnoscView.PokazKomunikat("Metoda płatności: " + platnosc.MetodaPlatnosci);
+                UIHelper.PokazSukces("Transakcja pomyślna. Wciśnij dowolny klawisz...");
 
                 if (!paragonZapisany)
                 {

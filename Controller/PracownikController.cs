@@ -19,8 +19,7 @@ public class PracownikController
     {
         while (true)
         {
-            PracownikView.PokazOpcjeMenu(opcje);
-            string wybor = PracownikView.PobierzWybor();
+            string wybor = PracownikView.PobierzWyborMenuPracownika(opcje);
 
             if (wybor == "0")
             {
@@ -45,76 +44,106 @@ public class PracownikController
         switch (wybranaOpcja)
         {
             case OpcjaPracownika.StanMagazynuPaliw:
-                List<Paliwo> paliwa = magazynPaliw.PobierzPaliwa();
-                KlientView.PokazPaliwa(paliwa);
+                ObslugaStanuMagazynuPaliw();
                 break;
             
             case OpcjaPracownika.StanMagazynuSklepu:
-                List<Produkt> produkty = magazynProduktow.PobierzProdukty();
-                SklepView.PokazProdukty(produkty);
+                ObslugaStanuMagazynuSklepu();
                 break;
             
             case OpcjaPracownika.DostawaPaliwa:
-                List<Paliwo> listaPaliw = magazynPaliw.PobierzPaliwa();
-                KlientView.PokazPaliwa(listaPaliw);
-                string wyborPaliwa = KlientView.PobierzWyborPaliwa(listaPaliw.Count);
-
-                if (wyborPaliwa == "0")
-                {
-                    PracownikView.PokazKomunikat("Anulowano dostawę paliwa.");
-                    break;
-                }
-
-                int indeksPaliwa = int.Parse(wyborPaliwa) - 1;
-                Paliwo wybranePaliwo = listaPaliw[indeksPaliwa];
-
-                decimal iloscLitrow = PracownikView.PobierzIloscLitrow();
-                if (iloscLitrow == 0) break;
-
-                wybranePaliwo.DostepnaIloscPaliwa += iloscLitrow;
-                magazynPaliw.ZapiszPaliwa();
-                PracownikView.PokazKomunikat($"Dodano {iloscLitrow:F2} l do {wybranePaliwo.NazwaPaliwa}. Nowy stan: {wybranePaliwo.DostepnaIloscPaliwa:F2} l.");
+                ObslugaDostawyPaliwa();
                 break;
 
             case OpcjaPracownika.DostawaProduktu:
-                List<Produkt> listaProduktow = magazynProduktow.PobierzProdukty();
-                SklepView.PokazProdukty(listaProduktow);
-                string wyborProduktu = SklepView.PobierzWyborProduktu();
-
-                if (wyborProduktu == "0")
-                {
-                    PracownikView.PokazKomunikat("Anulowano dostawę produktu.");
-                    break;
-                }
-
-                if (!int.TryParse(wyborProduktu, out int numerProduktu) || numerProduktu < 1 || numerProduktu > listaProduktow.Count)
-                {
-                    PracownikView.PokazKomunikat("Nieprawidłowy wybór produktu!");
-                    break;
-                }
-
-                Produkt wybranyProdukt = listaProduktow[numerProduktu - 1];
-                int iloscSztuk = PracownikView.PobierzIloscSztuk(wybranyProdukt.DostepnaIlosc);
-
-                if (iloscSztuk == 0) break;
-
-                wybranyProdukt.DostepnaIlosc += iloscSztuk;
-                magazynProduktow.ZapiszProdukty();
-                PracownikView.PokazKomunikat($"Dodano {iloscSztuk} szt. produktu {wybranyProdukt.Nazwa}. Nowy stan: {wybranyProdukt.DostepnaIlosc} szt.");
+                ObslugaDostawyProduktu();
                 break;
             
             case OpcjaPracownika.ZmianaHasla:
-                    string noweHaslo = PracownikView.PobierzNoweHaslo();
-                    
-                    if (string.IsNullOrWhiteSpace(noweHaslo))
-                    {
-                        PracownikView.PokazKomunikat("Hasło nie może być puste!");
-                        break;
-                    }
-                    
-                    AutoryzacjaService.ZmienHaslo("Pracownik", noweHaslo);
-                    PracownikView.PokazKomunikat("Hasło pracownika zostało pomyślnie zmienione!");
-                    break;
+                ObslugaZmianyHasla();
+                break;
         }
+    }
+
+
+    private static void ObslugaStanuMagazynuPaliw()
+    {
+        Console.Clear();
+        List<Paliwo> paliwa = magazynPaliw.PobierzPaliwa();
+        KlientView.PokazPaliwa(paliwa);
+        UIHelper.PoczekajNaKlawisz();
+    }
+
+    private static void ObslugaStanuMagazynuSklepu()
+    {
+        Console.Clear();
+        List<Produkt> produkty = magazynProduktow.PobierzProdukty();
+        SklepView.PokazProdukty(produkty);
+        UIHelper.PoczekajNaKlawisz();
+    }
+
+    private static void ObslugaDostawyPaliwa()
+    {
+        List<Paliwo> listaPaliw = magazynPaliw.PobierzPaliwa();
+        KlientView.PokazPaliwa(listaPaliw);
+        string wyborPaliwa = KlientView.PobierzWyborPaliwa(listaPaliw.Count);
+
+        if (wyborPaliwa == "0")
+        {
+            PracownikView.PokazKomunikat("Anulowano dostawę paliwa.");
+            return;
+        }
+
+        int indeksPaliwa = int.Parse(wyborPaliwa) - 1;
+        Paliwo wybranePaliwo = listaPaliw[indeksPaliwa];
+
+        decimal iloscLitrow = PracownikView.PobierzIloscLitrow();
+        if (iloscLitrow == 0) return;
+
+        wybranePaliwo.DostepnaIloscPaliwa += iloscLitrow;
+        magazynPaliw.ZapiszPaliwa();
+        PracownikView.PokazKomunikat($"Dodano {iloscLitrow:F2} l do {wybranePaliwo.NazwaPaliwa}. Nowy stan: {wybranePaliwo.DostepnaIloscPaliwa:F2} l.");
+    }
+
+    private static void ObslugaDostawyProduktu()
+    {
+        List<Produkt> listaProduktow = magazynProduktow.PobierzProdukty();
+        SklepView.PokazProdukty(listaProduktow);
+        string wyborProduktu = SklepView.PobierzWyborProduktu();
+
+        if (wyborProduktu == "0")
+        {
+            PracownikView.PokazKomunikat("Anulowano dostawę produktu.");
+            return;
+        }
+
+        if (!int.TryParse(wyborProduktu, out int numerProduktu) || numerProduktu < 1 || numerProduktu > listaProduktow.Count)
+        {
+            PracownikView.PokazKomunikat("Nieprawidłowy wybór produktu!");
+            return;
+        }
+
+        Produkt wybranyProdukt = listaProduktow[numerProduktu - 1];
+        int iloscSztuk = PracownikView.PobierzIloscSztuk(wybranyProdukt.DostepnaIlosc);
+
+        if (iloscSztuk == 0) return;
+
+        wybranyProdukt.DostepnaIlosc += iloscSztuk;
+        magazynProduktow.ZapiszProdukty();
+        PracownikView.PokazKomunikat($"Dodano {iloscSztuk} szt. produktu {wybranyProdukt.Nazwa}. Nowy stan: {wybranyProdukt.DostepnaIlosc} szt.");
+    }
+
+    private static void ObslugaZmianyHasla()
+    {
+        string noweHaslo = PracownikView.PobierzNoweHaslo();
+                    
+        if (string.IsNullOrWhiteSpace(noweHaslo))
+        {
+            UIHelper.PokazBlad("Hasło nie może być puste!");
+            return;
+        }
+                    
+        AutoryzacjaService.ZmienHaslo("Pracownik", noweHaslo);
+        UIHelper.PokazSukces("Hasło pracownika zostało pomyślnie zmienione!");
     }
 }

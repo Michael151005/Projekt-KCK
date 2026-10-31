@@ -1,21 +1,26 @@
 public class KlientView
 {
-    public static void PokazMenuOpcji(List<OpcjaKlienta> opcje)
+    public static string PobierzWyborMenuKlienta(List<OpcjaKlienta> opcje)
     {
-        Console.WriteLine("===== MENU KLIENTA =====");
+        string[] opcjeNapisy = new string[opcje.Count + 1];
 
         for (int i = 0; i < opcje.Count; i++)
         {
-            Console.WriteLine((i + 1) + ") " + opcje[i]);
+            opcjeNapisy[i] = opcje[i] switch
+            {
+                OpcjaKlienta.Tankowanie => "Tankowanie paliwa",
+                OpcjaKlienta.Sklep => "Sklep z produktami",
+                OpcjaKlienta.Koszyk => "Przejdź do koszyka i kasy",
+                OpcjaKlienta.Paragon => "Pokaż ostatni paragon",
+                _ => opcje[i].ToString()
+            };
         }
 
-        Console.WriteLine("0) Powrót");
-    }
+        opcjeNapisy[opcje.Count] = "Powrót do menu głównego";
+        int indeks = UIHelper.PokazInteraktywneMenu("PANEL KLIENTA", opcjeNapisy);
 
-    public static string PobierzWybor()
-    {
-        Console.Write("Twój wybór: ");
-        return Console.ReadLine() ?? "";
+        if (indeks == opcje.Count) return "0";
+        return (indeks + 1).ToString();
     }
 
     public static void PokazKomunikat(string komunikat)
@@ -37,8 +42,6 @@ public class KlientView
             numer++;
         }
 
-        Console.WriteLine("------------------------------");
-        Console.WriteLine("0) Powrót");
         Console.WriteLine("------------------------------");
     }
 

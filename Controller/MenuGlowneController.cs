@@ -13,8 +13,7 @@ public class MenuGlowneController
 
         while (true)
         {
-            MenuGlowneView.WyswietlMenu(opcje);
-            string wybor = MenuGlowneView.PobierzWybor();
+            string wybor = MenuGlowneView.PobierzWyborMenuGlownego(opcje);
 
             if (wybor == "0")
             {
@@ -33,7 +32,7 @@ public class MenuGlowneController
             switch (wybranaOpcja)
             {
                 case OpcjaMenuGlownego.Klient:
-                    MenuGlowneView.PokazKomunikat("Zalogowano jako Klient");
+                    UIHelper.PokazSukces("Zalogowano jako Klient");
                     KlientController.UruchomPanelKlienta();
                     break;
 
@@ -42,13 +41,14 @@ public class MenuGlowneController
 
                     if (AutoryzacjaService.WeryfikujHaslo("Pracownik", hasloPracownika))
                     {
-                        MenuGlowneView.PokazKomunikat("Zalogowano jako Pracownik stacji");
+                        UIHelper.PokazSukces("Zalogowano jako Pracownik stacji");
                         PracownikController.UruchomPanelPracownika();
                     }
                     else
                     {
-                        MenuGlowneView.PokazKomunikat("Błędne hasło! Dostęp odmówiony.");
+                        UIHelper.PokazBlad("Błędne hasło! Dostęp odmówiony.");
                     }
+
                     break;
                     
                 case OpcjaMenuGlownego.Kierownik:
@@ -56,13 +56,14 @@ public class MenuGlowneController
 
                     if (AutoryzacjaService.WeryfikujHaslo("Kierownik", hasloKierownika))
                     {
-                        MenuGlowneView.PokazKomunikat("Zalogowano jako Kierownik stacji");
+                        UIHelper.PokazSukces("Zalogowano jako Kierownik stacji");
                         KierownikController.UruchomPanelKierownika();
                     }
                     else
                     {
-                        MenuGlowneView.PokazKomunikat("Błędne hasło! Dostęp odmówiony.");
+                        UIHelper.PokazBlad("Błędne hasło! Dostęp odmówiony.");
                     }
+
                     break;
             }
         }
