@@ -13,7 +13,7 @@ public class PlatnośćController
     {
         if (koszyk.PobierzPozycje().Count == 0)
         {
-            PlatnoscView.PokazKomunikat("Koszyk jest pusty");
+           UIHelper.PokazBlad("Koszyk jest pusty");
             return;
         }
 
@@ -29,7 +29,7 @@ public class PlatnośćController
 
             if (produkt == null || zamowienie.Ilosc <= 0 || zamowienie.Ilosc != decimal.Truncate(zamowienie.Ilosc) || zamowienie.Ilosc > produkt.DostepnaIlosc)
             {
-                PlatnoscView.PokazKomunikat("Produkt " + zamowienie.Nazwa + " jest niedostępny w wymaganej ilości!");
+                UIHelper.PokazBlad("Produkt " + zamowienie.Nazwa + " jest niedostępny w wymaganej ilości!");
                 return;
             }
         }
@@ -66,13 +66,13 @@ public class PlatnośćController
 
             if (wpisanyKod == "0")
             {
-                PlatnoscView.PokazKomunikat("Płatność Blik anulowana.");
+                UIHelper.PokazBlad("Płatność Blik anulowana.");
                 return;
             }
 
             if (wpisanyKod != wygenerowanyKod.ToString())
             {
-                PlatnoscView.PokazKomunikat("Niepoprawny kod Blik! Transakcja odrzucona.");
+                UIHelper.PokazBlad("Niepoprawny kod Blik! Transakcja odrzucona.");
                 return;
             }
 
@@ -100,13 +100,13 @@ public class PlatnośćController
 
                 if (wpisanyPin == "0")
                 {
-                    PlatnoscView.PokazKomunikat("Płatność kartą anulowano.");
+                    UIHelper.PokazBlad("Płatność kartą anulowano.");
                     return;
                 }
 
                 if (wpisanyPin == pinKarty)
                 {
-                    PlatnoscView.PokazKomunikat("PIN poprawny. Autoryzacja transakcji...");
+                    UIHelper.PokazSukces("PIN poprawny. Autoryzacja transakcji...");
                     break;
                 }
                 else
@@ -131,8 +131,7 @@ public class PlatnośćController
         {
             if (kwota > 15000m)
             {
-                Console.WriteLine($"Kwota rachunku ({kwota} zł) przekracza maksymalny limit 15 000 zł!");
-                Console.WriteLine("Wybierz inną metode płatności.");
+                UIHelper.PokazBlad($"Kwota rachunku ({kwota} zł) przekracza maksymalny limit 15 000 zł!\nWybierz inną metode płatności.");
                 return;
             }
         }

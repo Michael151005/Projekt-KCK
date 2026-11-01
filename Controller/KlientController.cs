@@ -111,18 +111,16 @@ public class KlientController
                 koszyk.DodajPozycje(nowaPozycja);
                 magazyn.ZapiszPaliwa();
 
-                KlientView.PokazKomunikat("Tankowanie zakończono pomyślnie!");
-                KlientView.PokazKomunikat("Dodano paliwo do koszyka.");
-                KlientView.PokazKomunikat($"Pozostało paliwa: {wybranePaliwo.DostepnaIloscPaliwa:F2} l.");
+                UIHelper.PokazSukces($"Tankowanie zakończono pomyślnie!\nDodano paliwo do koszyka.\nPozostało paliwa: {wybranePaliwo.DostepnaIloscPaliwa:F2} l.");
             }
             else
             {
-                KlientView.PokazKomunikat("Nie udało się zatankować paliwa!");
+                UIHelper.PokazBlad("Nie udało się zatankować paliwa!");
             }
         }
         else
         {
-            KlientView.PokazKomunikat("Tankowanie anulowane.");
+            UIHelper.PokazBlad("Tankowanie anulowane.");
         }      
     }
 
@@ -148,7 +146,7 @@ public class KlientController
 
         if (ilosc == 0)
         {
-            SklepView.PokazKomunikat("Anulowano dodanie produktu.");
+            UIHelper.PokazBlad("Anulowano dodanie produktu.");
             return;
         }
 
@@ -156,7 +154,7 @@ public class KlientController
 
         if (iloscWKoszyku + ilosc > wybranyProdukt.DostepnaIlosc)
         {
-            SklepView.PokazKomunikat("Brak wystarczającej ilości produktu!");
+            UIHelper.PokazBlad("Brak wystarczającej ilości produktu!");
             return;
         }
                 
@@ -169,7 +167,7 @@ public class KlientController
         };
 
         koszyk.DodajPozycje(nowaPozycjaProduktu);
-        SklepView.PokazKomunikat("Dodano produkt do koszyka!");
+        UIHelper.PokazSukces("Dodano produkt do koszyka!");
         return;
     }
 
@@ -196,7 +194,7 @@ public class KlientController
 
         if (transakcje.Count == 0)
         {
-            KlientView.PokazKomunikat("Nie ma jeszcze żadnych opłaconych transakcji!");
+            UIHelper.PokazBlad("Nie ma jeszcze żadnych opłaconych transakcji!");
             return;
         }
 
