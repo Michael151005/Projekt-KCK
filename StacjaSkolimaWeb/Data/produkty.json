@@ -1,0 +1,22 @@
+[
+  {
+    "Nazwa": "Kawa",
+    "Cena": 8.50,
+    "DostepnaIlosc": 40
+  },
+  {
+    "Nazwa": "Hot-dog",
+    "Cena": 9.00,
+    "DostepnaIlosc": 30
+  },
+  {
+    "Nazwa": "Woda mineralna",
+    "Cena": 4.20,
+    "DostepnaIlosc": 200
+  },
+  {
+    "Nazwa": "Napoj energetyczny",
+    "Cena": 7.50,
+    "DostepnaIlosc": 120
+  }
+]
