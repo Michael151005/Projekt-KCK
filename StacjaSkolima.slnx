@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="StacjaBenzynowa.csproj" />
+  <Project Path="StacjaSkolimaWeb/StacjaSkolimaWeb.csproj" />
+</Solution>
