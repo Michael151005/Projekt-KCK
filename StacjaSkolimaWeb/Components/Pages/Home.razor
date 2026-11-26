@@ -5,14 +5,14 @@
 
 <!-- Górny pasek nawigacji -->
 <header class="navbar">
-    <div class="role-switcher">
+    <div class="brand">
         <span>⛽</span>
         <span class="brand-stacja">STACJA</span>
         <span class="brand-skolima">SKOLIMA</span>
     </div>
 
     <!-- Przełącznik rół -->
-    <nav>
+    <nav class="role-switcher">
         <button class="role-btn @(aktywnaRola == "Klient" ? "active" : "")" @onclick='() => WybierzRole("Klient")'>
             Klient
         </button>
@@ -29,10 +29,7 @@
 <main class="main-container">
     @if (aktywnaRola == "Klient")
     {
-        <div class="card animate-fade">
-            <h2 style="color: var(--skolima-cyan); margin-bottom: 8px;">Panel Klienta</h2>
-            <p style="color: var(--text-muted);">Tutaj za chwilę podepniemy dystrybutory, sklep oraz koszyk.</p>
-        </div>
+        <PanelKlienta OnPowiadomienie="ObsluzPowiadomienieKomponentu" />
     }
     else if (aktywnaRola == "Pracownik")
     {
@@ -173,5 +170,10 @@
             komunikatToast = "";
             StateHasChanged();
         }
+    }
+
+    private void ObsluzPowiadomienieKomponentu((string Tresc, bool Sukces) dane)
+    {
+        PokazPowiadomienie(dane.Tresc, dane.Sukces);
     }
 }

@@ -1,0 +1,636 @@
+@using System.IO
+
+<div class="klient-layout animate-fade">
+    <!-- Lewa kolumna: Dystrybutory i Sklep -->
+    <section>
+        <!-- Pasek narzędzi klienta -->
+        <div class="klient-toolbar">
+            <div style="display: flex; gap: 10px;">
+                <button class="@(aktywnaZakladka == "Paliwa" ? "btn-magenta" : "btn-ghost")" @onclick='() => aktywnaZakladka = "Paliwa"'>
+                    ⛽ Dystrybutory
+                </button>
+                <button class="@(aktywnaZakladka == "Sklep" ? "btn-magenta" : "btn-ghost")" @onclick='() => aktywnaZakladka = "Sklep"'>
+                    🛒 Sklep stacji
+                </button>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn-cyan" @onclick="OtworzModelKarty">
+                    💳 Karta: @(pinKarty == "BRAK" ? "Brak" : pinKarty == "ODRZUCONA" ? "Zablokowana" : "Aktywna")
+                </button>
+                <button class="btn-ghost" @onclick="PokazOstatniParagon">
+                    🧾Ostatni paragon
+                </button>
+            </div>
+        </div>
+
+        <!-- Zakładka 1: Dystrybutory paliw -->
+        @if (aktywnaZakladka == "Paliwa")
+        {
+            <div class="items-grid animate-fade">
+                @foreach (var paliwo in paliwa)
+                {
+                    decimal litry = litryDlaPaliwa.GetValueOrDefault(paliwo.NazwaPaliwa, 0m);
+                    decimal szacowanyKoszt = TankowanieService.ObliczKosztTankowania(litry, paliwo.CenaZaLitr);
+                    double procentZbiornika = Math.Min(100, (double)(paliwo.DostepnaIloscPaliwa / 5000m * 100m));
+
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="color: var(--skolima-cyan);">@paliwo.NazwaPaliwa</h3>
+                            <span style="font-size: 1.2rem; font-weight: 800; color: var(--skolima-magenta);">
+                                @paliwo.CenaZaLitr.ToString("F2") zł/l
+                            </span>
+                        </div>
+
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">
+                            Dostępne w zbiorniku: <strong>@paliwo.DostepnaIloscPaliwa.ToString("F2") l</strong>
+                        </p>
+
+                        <!-- Animowany pasek poziomu paliwa -->
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: @procentZbiornika.ToString("F0", System.Globalization.CultureInfo.InvariantCulture)%;"></div>
+                        </div>
+
+                        <div style="margin-top: 14px;">
+                            <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 6px;">
+                                Ilość litrów do zatankowania:
+                            </label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="number" step="0.5" min="0" max="@paliwo.DostepnaIloscPaliwa" class="input-skolima" value="@litry.ToString(System.Globalization.CultureInfo.InvariantCulture)" @onchange="(e) => ZmienLitry(paliwo.NazwaPaliwa, e.Value?.ToString())" />
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                            <span>
+                                Koszt: <strong style="color: var(--text-main);">@szacowanyKoszt.ToString("F2") zł</strong>
+                            </span>
+                            <button class="btn-magenta" disabled="@(paliwo.DostepnaIloscPaliwa <= 0 || litry <= 0)" @onclick="()=> ZatankujPaliwo(paliwo)">
+                                Zatankuj
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Zakładka 2: Sklep z produktami -->
+        @if (aktywnaZakladka == "Sklep")
+        {
+            <div class="items-grid animate-fade">
+                @foreach (var produkt in produkty)
+                {
+                    int sztuki = sztukiDlaProduktu.GetValueOrDefault(produkt.Nazwa, 0);
+
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
+                            <h3 style="color: var(--text-main); font-size: 1.1rem;">@produkt.Nazwa</h3>
+                            <span style="font-size: 1.15rem; font-weight: 800; color: var(--skolima-cyan); white-space: nowrap;">
+                                @produkt.Cena.ToString("F2") zł
+                            </span>
+                        </div>
+
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+                            Na półce: <strong>@produkt.DostepnaIlosc szt.</strong>
+                        </p>
+
+                        <div style="display: flex; gap: 10px; align-items: center; margin-top: 16px;">
+                            <input type="number" min="0" max="@produkt.DostepnaIlosc" class="input-skolima" style="width: 90px;" value="@sztuki" @onchange="(e) => ZmienSztuki(produkt.Nazwa, e.Value?.ToString())" />
+                            <button class="btn-cyan" style="flex: 1;" disabled="@(produkt.DostepnaIlosc <= 0 || sztuki <= 0)" @onclick="() => DodajProduktDoKoszyka(produkt)">
+                                + Do koszyka
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+
+    <!-- Prawa kolumna: Koszyk i kasa -->
+    <aside class="card koszyk-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+            <h2 style="color: var(--skolima-magenta); font-size: 1.3rem;">🛍️ Twój Koszyk</h2>
+            @if (koszyk.PobierzPozycje().Count > 0)
+            {
+                <button class="btn-ghost" style="padding: 5px 10px; font-size: 0.8rem;" @onclick="WyczyscKoszyk">
+                    Wyczyść
+                </button>
+            }
+        </div>
+
+        @if (koszyk.PobierzPozycje().Count == 0)
+        {
+            <div style="text-align: center; padding: 40px 10px; color: var(--text-muted);">
+                <p style="font-size: 2rem; margin-bottom: 8px">🛒</p>
+                <p>Koszyk jest pusty.</p>
+                <p style="font-size: 0.85rem; margin-top: 4px;">Zatankuj paliwo lub wybierz coś ze sklepu.</p>
+            </div>
+        }
+        else
+        {
+            <div>
+                @foreach (var poz in koszyk.PobierzPozycje())
+                {
+                    <div class="koszyk-item">
+                        <div>
+                            <div style="font-weight: 600;">@poz.Nazwa</div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);">
+                                @poz.Ilość @poz.Jednostka × @poz.CenaJednostkowa.ToString("F2") zł
+                            </div>
+                        </div>
+                        <div style="font-weight: 700; color: var(--skolima-cyan);">
+                            @poz.Wartosc.ToString("F2") zł
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <span style="color: var(--text-muted);">Łącznie do zapłaty:</span>
+                    <span style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">
+                        @koszyk.ObliczWartoscKoszyka().ToString("F2") zł
+                    </span>
+                </div>
+
+                <button class="btn-magenta" style="width: 100%; padding: 14px; font-size: 1.05rem;" @onclick="OtworzKase">
+                    Przejdź do kasy →
+                </button>
+            </div>
+        }
+    </aside>
+</div>
+
+<!-- Modal 1: Konfiguracja karty płatniczej -->
+@if (pokazModalKarty)
+{
+    <div class="modal-backdrop" @onclick="() => pokazModalKarty = false">
+        <div class="modal-box" @onclick:stopPropagation="true">
+            <h3 style="color: var(--skolima-cyan); margin-bottom: 8px;">💳 Karta płatnicza klienta</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
+                Ustaw 4-cyfrowy PIN swojej karty lub wybierz brak karty
+            </p>
+
+            <input type="password" maxlength="4" class="input-skolima" placeholder="4 cyfry PIN (np. 1234)" @bind="nowyPinKarty"/>
+            <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 20px;">
+                <button class="btn-ghost" @onclick="UstawBrakKarty">Nie mam karty</button>
+                <div>
+                    <button class="btn-ghost" @onclick="() => pokazModalKarty = false">Anuluj</button>
+                    <button class="btn-magenta" @onclick="ZapiszPinKarty">Zapisz kartę</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal 2: Kasa i Płatność -->
+@if (pokazModalKasy)
+{
+    <div class="modal-backdrop" @onclick="() => pokazModalKasy = false">
+        <div class="modal-box" @onclick:stopPropagation="true">
+            <h3 style="color: var(--skolima-magenta); margin-bottom: 6px;">Finalizacja płatności</h3>
+            <p style="color: var(--text-muted); margin-bottom: 18px;">
+                Kwota rachunku: <strong style="color: var(--skolima-cyan); font-size: 1.2rem;">@koszyk.ObliczWartoscKoszyka().ToString("F2") zł</strong>
+            </p>
+
+            <!-- Wybór metody płatności -->
+            <div class="payment-methods-grid">
+                <button class="@(wybranaMetoda == MetodaPlatnosci.Gotowka ? "btn-magenta" : "btn-ghost")" @onclick="() => WybierzMetodePlatnosci(MetodaPlatnosci.Gotowka)">
+                    💵 Gotówka
+                </button>
+                <button class="@(wybranaMetoda == MetodaPlatnosci.Karta ? "btn-magenta" : "btn-ghost")" @onclick="() => WybierzMetodePlatnosci(MetodaPlatnosci.Karta)">
+                    💳 Karta
+                </button>
+                <button class="@(wybranaMetoda == MetodaPlatnosci.Blik ? "btn-magenta" : "btn-ghost")" @onclick="() => WybierzMetodePlatnosci(MetodaPlatnosci.Blik)">
+                    📱 BLIK
+                </button>
+            </div>
+        
+
+            <!-- Szczegóły wybranej metody -->
+            @if (wybranaMetoda == MetodaPlatnosci.Gotowka)
+            {
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Płatność gotówką przy kasie (maksymalny limit transakcji: 15 000,00 zł).
+                </p>
+            }
+            else if (wybranaMetoda == MetodaPlatnosci.Karta)
+            {
+                @if (pinKarty == "BRAK")
+                {
+                    <p style="color: var(--danger); font-size: 0.9rem;">
+                        Brak zarejestrowanej karty! Kliknij "Karta" na pasku, aby dodać PIN, lub wybierz inną metodę.
+                    </p>
+                }
+                else if (pinKarty == "ODRZUCONA")
+                {
+                    <p style="color: var(--danger); font-size: 0.9rem;">
+                        Karta jest zablokowana po 3 błędnych próbach!
+                    </p>
+                }
+                else
+                {
+                    <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 6px;">
+                        Podaj 4-cyfrowy PIN karty (pozostałe próby: @probyPin):
+                    </label>
+                    <input type="password" maxlength="4" class="input-skolima" placeholder="****" @bind="wpisanyPinDoPlatnosci" />
+                }
+            }
+            else if (wybranaMetoda == MetodaPlatnosci.Blik)
+            {
+                <div style="background: var(--bg-input); border: 1px solid var(--skolima-cyan); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                    <div style="font-size: 0.8rem; color: var(--skolima-cyan);">[Telefon] Zapisano kod w Data/blik.txt</div>
+                    <div style="font-size: 1.3rem; font-weight: 800; letter-spacing: 3px; margin-top: 4px;">
+                        Kod: @wygenerowanyKodBlik
+                    </div>
+                </div>
+                <input type="text" maxlength="6" class="input-skolima" placeholder="Wpisz 6-cyfrowy kod BLIK" @bind="wpisanyKodBlik"/>
+            }
+
+            @if (!string.IsNullOrEmpty(bladPlatnosci))
+            {
+                <p style="color: var(--danger); font-size: 0.85rem; margin-top: 10px;">@bladPlatnosci</p>
+            }
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px;">
+                <button class="btn-ghost" @onclick="() => pokazModalKasy = false">Anuluj</button>
+                <button class="btn-magenta" @onclick="ZatwierdzPlatnosc">Zapłać teraz</button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal 3: Podglad Paragonu -->
+@if (pokazModalParagonu && podgladanyParagon != null)
+{
+    <div class="modal-backdrop" @onclick="() => pokazModalParagonu = false">
+        <div class="modal-box" style="border-color: var(--skolima-cyan); box-shadow: 0 0 30px var(--skolima-cyan-glow);" @onclick:stopPropagation="true">
+            <div style="text-align: center; border-bottom: 1px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 14px;">
+                <h3 style="color: var(--skolima-cyan); letter-spacing: 1px;">PARAGON FISKALNY</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">STACJA SKOLIMA</p>
+                <p style="color: var(--text-muted); font-size: 0.8rem;">@podgladanyParagon.DataTransakcji.ToString("yyyy-MM-dd HH:mm:ss")</p>
+            </div>
+
+            <div>
+                @foreach (var poz in podgladanyParagon.Pozycje)
+                {
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span>@poz.Nazwa (@poz.Ilość @poz.Jednostka × @poz.CenaJednostkowa.ToString("F2"))</span>
+                        <strong>@poz.Wartosc.ToString("F2") zł</strong>
+                    </div>
+                }
+            </div>
+
+            <div style="border-top: 1px dashed var(--border-color); margin-top: 14px; padding-top: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800;">
+                    <span>SUMA PLN:</span>
+                    <span style="color: var(--skolima-magenta);">@podgladanyParagon.Kwota.ToString("F2") zł</span>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">
+                    Metoda płatności: @podgladanyParagon.MetodaPlatnosci
+                </p>
+            </div>
+
+            <button class="btn-cyan" style="width: 100%; margin-top: 18px;" @onclick="() => pokazModalParagonu = false">
+                Zamknij paragon
+            </button>
+        </div>
+    </div>
+}
+
+<style>
+    .klient-layout {
+        display: grid;
+        grid-template-columns: 1fr 370px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .klient-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .items-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 18px;
+    }
+
+    .koszyk-panel {
+        position: sticky;
+        top: 90px;
+        border-color: rgba(255, 0, 127, 0.35);
+    }
+
+    .koszyk-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--bg-input);
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+    }
+
+    @@media (max-width: 960px) {
+        .klient-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+@code {
+    [Parameter]
+    public EventCallback<(string Tresc, bool Sukces)> OnPowiadomienie { get; set; }
+
+    // Odwołania do orygilanych klas i magazynów
+    private MagazynPaliw magazynPaliw = WspolneMagazyny.Paliwa;
+    private MagazynProduktow magazynProduktow = WspolneMagazyny.Produkty;
+    private Koszyk koszyk = new Koszyk();
+    private HistoriaTransakcji historia = new HistoriaTransakcji();
+
+    private List<Paliwo> paliwa = new();
+    private List<Produkt> produkty = new();
+
+    // Stan UI
+    private string aktywnaZakladka = "Paliwa";
+    private Dictionary<string, decimal> litryDlaPaliwa = new();
+    private Dictionary<string, int> sztukiDlaProduktu = new();
+
+    // Stan karty płatniczej (domyślny PIN: 1234)
+    private string pinKarty = "1234";
+    private bool pokazModalKarty = false;
+    private string nowyPinKarty = "";
+
+    // Stan kasy i płatności
+    private bool pokazModalKasy = false;
+    private MetodaPlatnosci wybranaMetoda = MetodaPlatnosci.Gotowka;
+    private string wpisanyPinDoPlatnosci = "";
+    private int probyPin = 3;
+    private int wygenerowanyKodBlik = 0;
+    private string wpisanyKodBlik = "";
+    private string bladPlatnosci = "";
+
+    // Stan paragonu
+    private bool pokazModalParagonu = false;
+    private Transakcja? podgladanyParagon;
+
+    protected override void OnInitialized()
+    {
+        paliwa = magazynPaliw.PobierzPaliwa();
+        produkty = magazynProduktow.PobierzProdukty();
+
+        foreach (var p in paliwa)
+            litryDlaPaliwa[p.NazwaPaliwa] = 0m;
+
+        foreach (var prod in produkty)
+            sztukiDlaProduktu[prod.Nazwa] = 0;
+    }
+
+    private void ZmienLitry(string nazwaPaliwa, string? wartosc)
+    {
+        if (decimal.TryParse(wartosc, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal wynik) && wynik >= 0)
+        {
+            litryDlaPaliwa[nazwaPaliwa] = Math.Round(wynik, 2);
+        }
+    }
+
+    private void ZmienSztuki(string nazwaProduktu, string? wartosc)
+    {
+        if (int.TryParse(wartosc, out int wynik) && wynik >= 0)
+        {
+            sztukiDlaProduktu[nazwaProduktu] = wynik;
+        }
+    }
+
+    private async Task ZatankujPaliwo(Paliwo paliwo)
+    {
+        decimal iloscLitrow = litryDlaPaliwa.GetValueOrDefault(paliwo.NazwaPaliwa, 0m);
+
+        if (!TankowanieService.CzyMoznaZatankować(iloscLitrow, paliwo))
+        {
+            await WyslijPowiadomienie("Nie można zatankować podanej ilości paliwa!", false);
+            return;
+        }
+
+        if (TankowanieService.WykonajTankowanie(paliwo, iloscLitrow))
+        {
+            koszyk.DodajPozycje(new PozycjaKoszyka
+            {
+                Nazwa = paliwo.NazwaPaliwa,
+                Ilość = iloscLitrow,
+                CenaJednostkowa = paliwo.CenaZaLitr,
+                Jednostka = "l"
+            });
+
+            magazynPaliw.ZapiszPaliwa();
+            await WyslijPowiadomienie($"Zatankowano {iloscLitrow:F2} l ({paliwo.NazwaPaliwa}) i dodano do koszyka!", true);
+        }
+    }
+
+    private async Task DodajProduktDoKoszyka(Produkt produkt)
+    {
+        int ilosc = sztukiDlaProduktu.GetValueOrDefault(produkt.Nazwa, 0);
+        decimal iloscWKoszyku = koszyk.PobierzPozycje().Where(p => p.Nazwa == produkt.Nazwa && p.Jednostka == "szt.").Sum(p => p.Ilość);
+
+        if (ilosc <= 0 || iloscWKoszyku + ilosc > produkt.DostepnaIlosc)
+        {
+            await WyslijPowiadomienie($"Brak wystarczającej ilości ({produkt.Nazwa}) na magazynie!", false);
+            return;
+        }
+
+        koszyk.DodajPozycje(new PozycjaKoszyka
+        {
+            Nazwa = produkt.Nazwa,
+            Ilość = ilosc,
+            CenaJednostkowa = produkt.Cena,
+            Jednostka = "szt."
+        });
+
+        await WyslijPowiadomienie($"Dodano do koszyka: {produkt.Nazwa} ({ilosc} szt.)", true);
+    }
+
+    private async Task WyczyscKoszyk()
+    {
+        koszyk.WyczyscKoszyk();
+        await WyslijPowiadomienie("Koszyk został wyczyszczony.", true);
+    }
+
+    private void OtworzModelKarty()
+    {
+        nowyPinKarty = "";
+        pokazModalKarty = true;
+    }
+
+    private async Task ZapiszPinKarty()
+    {
+        if (nowyPinKarty.Length == 4 && int.TryParse(nowyPinKarty, out _))
+        {
+            pinKarty = nowyPinKarty;
+            probyPin = 3;
+            pokazModalKarty = false;
+            await WyslijPowiadomienie("Zarejestrowano kartę płatniczą z nowym PIN-em.", true);
+        }
+        else
+        {
+            await WyslijPowiadomienie("PIN musi składać się z dokładnie 4 cyfr!", false);
+        }
+    }
+
+    private async Task UstawBrakKarty()
+    {
+        pinKarty = "BRAK";
+        pokazModalKarty = false;
+        await WyslijPowiadomienie("Ustawiono brak karty przy sobie.", true);
+    }
+
+    private void OtworzKase()
+    {
+        bladPlatnosci = "";
+        wpisanyPinDoPlatnosci = "";
+        wpisanyKodBlik = "";
+        WybierzMetodePlatnosci(MetodaPlatnosci.Gotowka);
+        pokazModalKasy = true;
+    }
+
+    private void WybierzMetodePlatnosci(MetodaPlatnosci metoda)
+    {
+        wybranaMetoda = metoda;
+        bladPlatnosci = "";
+
+        if (metoda == MetodaPlatnosci.Blik)
+        {
+            wygenerowanyKodBlik = Random.Shared.Next(100000, 1000000);
+            string sciezkaBlik = Path.Combine(Directory.GetCurrentDirectory(), "Data", "blik.txt");
+            Directory.CreateDirectory(Path.GetDirectoryName(sciezkaBlik)!);
+            File.WriteAllText(sciezkaBlik, $"=== TWÓJ TELEFON ===\nKOD BLIK: {wygenerowanyKodBlik}\nWażny przez: 2 minuty\n====================");
+        }
+    }
+
+    private async Task ZatwierdzPlatnosc()
+    {
+        bladPlatnosci = "";
+        decimal kwota = koszyk.ObliczWartoscKoszyka();
+
+        // Walidacja metod płatności
+        if (wybranaMetoda == MetodaPlatnosci.Gotowka && kwota > 15000m)
+        {
+            bladPlatnosci = $"Kwota ({kwota:F2}) przekracza limit gotówki 15 000 zł!";
+            return;
+        }
+        else if (wybranaMetoda == MetodaPlatnosci.Blik)
+        {
+            if (wpisanyKodBlik != wygenerowanyKodBlik.ToString())
+            {
+                bladPlatnosci = "Niepoprawny kod BLIK! Transakcja odrzucona.";
+                return;
+            }
+        }
+        else if (wybranaMetoda == MetodaPlatnosci.Karta)
+        {
+            if (pinKarty == "BRAK" || pinKarty == "ODRZUCONA")
+            {
+                bladPlatnosci = "Nie można zapłacić tą kartą.";
+                return;
+            }
+
+            if (wpisanyPinDoPlatnosci != pinKarty)
+            {
+                probyPin--;
+                wpisanyPinDoPlatnosci = "";
+
+                if (probyPin <= 0)
+                {
+                    pinKarty = "ODRZUCONA";
+                    bladPlatnosci = "KARTA ZABLOKOWANA! Przekroczono limit 3 prób.";
+                }
+                else
+                {
+                    bladPlatnosci = $"Błędny PIN! Pozostałe próby: {probyPin}";
+                }
+                return;
+            }
+        }
+
+        string nazwaMetody = wybranaMetoda switch
+        {
+            MetodaPlatnosci.Gotowka => "Gotówka",
+            MetodaPlatnosci.Karta => "Karta",
+            MetodaPlatnosci.Blik => "BLIK",
+            _ => wybranaMetoda.ToString()
+        };
+
+        Platnosc platnosc = new Platnosc
+        {
+            Kwota = kwota,
+            MetodaPlatnosci = nazwaMetody,
+            CzyOplacona = false
+        };
+
+        if (PlatnoscService.WykonajPlatnosc(platnosc))
+        {
+            Transakcja transakcja = new Transakcja
+            {
+                Kwota = platnosc.Kwota,
+                MetodaPlatnosci = platnosc.MetodaPlatnosci,
+                DataTransakcji = DateTime.Now
+            };
+
+            foreach (var poz in koszyk.PobierzPozycje())
+            {
+                transakcja.Pozycje.Add(new PozycjaKoszyka
+                {
+                    Nazwa = poz.Nazwa,
+                    Ilość = poz.Ilość,
+                    CenaJednostkowa = poz.CenaJednostkowa,
+                    Jednostka = poz.Jednostka
+                });
+
+                if (poz.Jednostka == "szt.")
+                {
+                    var prod = produkty.FirstOrDefault(p => p.Nazwa.Equals(poz.Nazwa, StringComparison.OrdinalIgnoreCase));
+
+                    if (prod != null)
+                    {
+                        SklepService.WykonajZakup(prod, (int)poz.Ilość);
+                    }
+                }
+            }
+
+            magazynProduktow.ZapiszProdukty();
+            historia.DodajTransakcje(transakcja);
+            koszyk.WyczyscKoszyk();
+
+            pokazModalKasy = false;
+            podgladanyParagon = transakcja;
+            pokazModalParagonu = true;
+            await WyslijPowiadomienie($"Zapłacono {platnosc.Kwota:F2} zł ({platnosc.MetodaPlatnosci})! Zapisano paragon TXT.", true);
+        }
+    }
+
+    private async Task PokazOstatniParagon()
+    {
+        var lista = historia.PobierzTransakcje();
+
+        if (lista.Count == 0)
+        {
+            await WyslijPowiadomienie("Brak opłaconych transakcji w historii!", false);
+            return;
+        }
+
+        podgladanyParagon = lista[^1];
+        pokazModalParagonu = true;
+    }
+
+    private async Task WyslijPowiadomienie(string tresc, bool sukces)
+    {
+        if (OnPowiadomienie.HasDelegate)
+        {
+            await OnPowiadomienie.InvokeAsync((tresc, sukces));
+        }
+    }
+}

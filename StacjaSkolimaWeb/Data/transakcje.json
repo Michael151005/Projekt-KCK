@@ -1,0 +1,37 @@
+[
+  {
+    "Pozycje": [
+      {
+        "Nazwa": "PB 95",
+        "Ilo\u015B\u0107": 10,
+        "CenaJednostkowa": 5.19,
+        "Jednostka": "l",
+        "Wartosc": 51.90
+      },
+      {
+        "Nazwa": "Kawa",
+        "Ilo\u015B\u0107": 1,
+        "CenaJednostkowa": 8.50,
+        "Jednostka": "szt.",
+        "Wartosc": 8.50
+      }
+    ],
+    "Kwota": 60.40,
+    "MetodaPlatnosci": "Got\u00F3wka",
+    "DataTransakcji": "2026-11-26T06:30:43.2610732+01:00"
+  },
+  {
+    "Pozycje": [
+      {
+        "Nazwa": "PB 95",
+        "Ilo\u015B\u0107": 1,
+        "CenaJednostkowa": 5.19,
+        "Jednostka": "l",
+        "Wartosc": 5.19
+      }
+    ],
+    "Kwota": 5.19,
+    "MetodaPlatnosci": "BLIK",
+    "DataTransakcji": "2026-11-26T06:43:40.9632361+01:00"
+  }
+]

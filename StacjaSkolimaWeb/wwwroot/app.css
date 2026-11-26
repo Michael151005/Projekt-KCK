@@ -277,3 +277,29 @@ body {
     background: linear-gradient(90deg, var(--skolima-magenta), var(--skolima-cyan));
     transition: width 0.4s ease;
 }
+
+/* Płatnośći i klasy pomocnicze */
+.payment-methods-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stack-sm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mt-1 { margin-top: 8px;}
+.mt-2 { margin-top: 16px;}
+.mt-3 { margin-top: 22px;}
+.mb-1 { margin-bottom: 8px;}
+.mb-2 { margin-bottom: 16px;}
