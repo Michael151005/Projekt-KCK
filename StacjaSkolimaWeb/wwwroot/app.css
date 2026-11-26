@@ -51,12 +51,12 @@ body {
 /* Górny pasek nawigacji */
 .navbar {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 16px 32px;
     background-color: var(--bg-card);
     border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -102,3 +102,178 @@ body {
     transition: all 0.25s ease;
 }
 
+.role-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.role-btn.active {
+    background: linear-gradient(135deg, var(--skolima-magenta), #C80064);
+    color: white;
+    box-shadow: 0 0 15px var(--skolima-magenta-glow);
+}
+
+/* Główny kontener */
+.main-container {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 28px 32px;
+}
+
+/* Przyciski */
+.btn-magenta {
+    background: linear-gradient(135deg, var(--skolima-magenta), #C80064);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px var(--skolima-magenta-glow);
+}
+
+.btn-magenta:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 127, 0.6);
+}
+
+.btn-magenta:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-cyan {
+    background: transparent;
+    color: var(--skolima-cyan);
+    border: 1px solid var(--skolima-cyan);
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-cyan:hover:not(:disabled) {
+    background: var(--skolima-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px var(--skolima-cyan-glow);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 9px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-ghost:hover {
+    color: var(--text-main);
+    border-color: var(--text-muted);
+}
+
+/* Kafelki i formularze */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 20px;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    border-color: var(--skolima-cyan);
+    box-shadow: 0 6px 24px rgba(0, 240, 255, 0.08);
+}
+
+.input-skolima {
+    width: 100%;
+    padding: 11px 14px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s ease;
+}
+
+.input-skolima:focus {
+    border-color: var(--skolima-cyan);
+    box-shadow: 0 0 10px var(--skolima-cyan-glow);
+}
+
+/* Okno modalne */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 7, 11, 0.8);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background: var(--bg-card);
+    border: 1px solid var(--skolima-magenta);
+    box-shadow: 0 0 35px var(--skolima-magenta-glow);
+    border-radius: 16px;
+    padding: 28px;
+    width: 100%;
+    max-width: 440px;
+    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Powiadomienia */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    padding: 14px 20px;
+    border-radius: 10px;
+    background: var(--bg-card);
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    animation: slideInRight 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toast.success {
+    border-left: 4px solid var(--success);
+    color: var(--success);
+}
+
+.toast.error {
+    border-left: 4px solid var(--danger);
+    color: var(--danger);
+}
+
+/* Pasek poziomu paliwa */
+.progress-track {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-input);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--skolima-magenta), var(--skolima-cyan));
+    transition: width 0.4s ease;
+}
