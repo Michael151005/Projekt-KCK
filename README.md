@@ -1,51 +1,81 @@
-# System Zarządzania Stacją Benzynową (C# Console App)
+# System Zarządzania Stacją Benzynową — Stacja Skolima (C# / .NET)
 
-Aplikacja konsolowa napisana w języku C# (.NET), symulująca pełny system obsługi stacji benzynowej. Projekt został zrealizowany z zachowaniem wzorca projektowego **MVC (Model-View-Controller)** oraz podziałem na warstwy biznesowe (Services).
+Kompleksowy system obsługi stacji benzynowej napisany w języku **C# (.NET)**, składający się z dwóch niezależnych warstw prezentacji opartych na wspólnym silniku biznesowym (`Models` oraz `Services`):
+- **Aplikacji Webowej (GUI)** — nowoczesny interfejs graficzny wykonany w technologii **Blazor Web App**.
+- **Aplikacji Konsolowej (TUI)** — oryginalna wersja tekstowa zrealizowana we wzorcu **MVC (Model-View-Controller)**.
 
-## Interfejs Użytkownika (UI/UX)
-W projekcie zrezygnowano ze standardowego wpisywania komend liczbowych na rzecz nowoczesnego interfejsu TUI (Text-based User Interface):
+---
+
+## Interfejsy Użytkownika (UI/UX)
+
+### 1. Wersja Webowa — Stacja Skolima (`StacjaSkolimaWeb`)
+- **Stylistyka i responsywność:** Autorski ciemny motyw (*Stacja Skolima*) z neonowymi akcentami cyjanu i magenty (`wwwroot/app.css`), oparty na CSS Grid i Flexbox.
+- **Reaktywność na żywo:** Komunikacja w trybie `InteractiveServer` (SignalR) — przeliczanie kosztów tankowania w czasie rzeczywistym, dynamiczne paski stanu zbiorników, okna modalne (logowanie, konfiguracja karty, kasa, podgląd paragonu) oraz powiadomienia typu *toast*.
+- **Zero ingerencji w logikę domenową:** Projekt webowy współdzieli klasy modeli i serwisów bezpośrednio z aplikacją konsolową, łącząc warstwę widoku i kontrolera w komponentach `.razor` (`Home`, `PanelKlienta`, `PanelPracownika`, `PanelKierownika`).
+
+### 2. Wersja Konsolowa (TUI — Text-based User Interface)
 - **Interaktywna nawigacja:** Obsługa menu odbywa się płynnie za pomocą **strzałek (góra/dół)** oraz zatwierdzania klawiszem **Enter**.
-- **Wydajne odświeżanie:** Zastosowano częściowe odświeżanie ekranu (nadpisywanie pozycji kursora), co całkowicie eliminuje efekt "migającej konsoli" znany z prostych aplikacji używających ciągłego czyszczenia ekranu.
+- **Wydajne odświeżanie:** Częściowe odświeżanie ekranu (nadpisywanie pozycji kursora) całkowicie eliminuje efekt „migającej konsoli”.
+
+---
 
 ## Funkcjonalności według ról
 
 System dzieli się na 3 główne panele dostępowe:
 
 1. **Klient:**
-   - Tankowanie pojazdu (sprawdzanie stanów z dystrybutora).
-   - Sklep (zakup produktów, dodawanie do koszyka).
-   - Obsługa koszyka i płatności (Gotówka, Karta z PIN-em, generowany kod BLIK).
-   - Drukowanie paragonu z podsumowaniem (zapis do formatu `.txt`).
+   - Tankowanie pojazdu z dystrybutorów (podgląd stanu zbiorników i wyliczanie kosztu na żywo).
+   - Sklep stacji (dodawanie produktów do koszyka z kontrolą dostępności na półce).
+   - Obsługa koszyka i płatności: **Gotówka** (limit 15 000 zł), **Karta płatnicza** (weryfikacja 4-cyfrowego PIN-u z blokadą po 3 błędnych próbach) oraz **BLIK** (generowanie 6-cyfrowego kodu zapisywanego do `Data/blik.txt`).
+   - Generowanie i podgląd paragonu fiskalnego (zapis do pliku `.txt`).
 
 2. **Pracownik (Wymaga logowania):**
-   - Wgląd w aktualne stany magazynowe paliw i produktów.
-   - Zamawianie dostaw (uzupełnianie dystrybutorów i półek).
+   - Wgląd w aktualne stany magazynowe paliw i produktów sklepowych wraz z alertami niskiego stanu.
+   - Rejestracja i przyjmowanie dostaw (uzupełnianie zbiorników i półek z natychmiastowym zapisem).
    - Zmiana własnego hasła dostępowego.
 
 3. **Kierownik (Wymaga logowania):**
-   - Pełny monitoring magazynów.
-   - Dynamiczna zmiana cen paliw i produktów sklepowych.
-   - Zarządzanie asortymentem (domawianie towaru).
-   - Generowanie raportów sprzedaży.
+   - Dynamiczna zmiana cen paliw oraz produktów sklepowych.
+   - Raport sprzedaży z podsumowaniem przychodów, liczby transakcji, sprzedanych litrów oraz pełną tabelą historii paragonów.
+   - Zmiana własnego hasła dostępowego.
+
+---
 
 ## Architektura i Technologie
 
-- **Język:** C# (Platforma .NET)
-- **Architektura:** MVC (Models, Views, Controllers, Services).
-- **Przechowywanie danych:** Trwały zapis za pomocą plików `.json` (np. `paliwa.json`, `produkty.json`, `transakcje.json`).
-- **Autoryzacja:** Hasła użytkowników nie są przetrzymywane jawnym tekstem, lecz jako skróty **Base64** w pliku `hasla.json`. Wpisywanie haseł jest maskowane gwiazdkami (`*`).
+- **Język i platforma:** C# / .NET
+- **Warstwa Web (GUI):** Blazor Web App (`InteractiveServer`), komponenty `.razor`, autorski arkusz stylów `app.css`, współdzielony stan magazynów w pamięci (`WspolneMagazyny`).
+- **Warstwa Konsolowa (TUI):** Wzorzec MVC (`Models`, `Views`, `Controllers`, `Services`).
+- **Przechowywanie danych:** Trwały zapis w plikach `.json` (`paliwa.json`, `produkty.json`, `transakcje.json`, `hasla.json`) oraz eksport paragonów i kodów BLIK do plików `.txt`.
+- **Autoryzacja:** Hasła użytkowników są kodowane w **Base64** w pliku `hasla.json` i maskowane podczas wpisywania.
+
+---
 
 ## Instrukcja uruchomienia
 
-Aby uruchomić projekt na swoim komputerze, upewnij się, że posiadasz zainstalowane środowisko **.NET SDK**.
+Upewnij się, że masz zainstalowane środowisko **.NET SDK**, a następnie sklonuj repozytorium i przejdź do jego katalogu głównego.
 
-1. Sklonuj repozytorium na swój dysk.
-2. Otwórz terminal / wiersz poleceń i przejdź do folderu głównego projektu (tam, gdzie znajduje się plik `.csproj`).
-3. Uruchom aplikację komendą:
+### Uruchomienie aplikacji webowej (GUI — Blazor)
+1. Przejdź do folderu projektu webowego:
+   ```bash
+   cd StacjaSkolimaWeb
+   ```
+2. Uruchom serwer aplikacji:
    ```bash
    dotnet run
+   ```
+3. Otwórz w przeglądarce adres wyświetlony w terminalu (np. `http://localhost:5000`).
 
-## Domyślne hasła 
+### Uruchomienie aplikacji konsolowej (TUI)
+1. W głównym katalogu repozytorium uruchom projekt konsolowy:
+   ```bash
+   dotnet run
+   ```
 
-- Pracownik: 1111
-- Kierownik: 9999
+---
+
+## Domyślne dane dostępowe
+
+- **Pracownik (hasło):** `1111`
+- **Kierownik (hasło):** `9999`
+- **Karta klienta w GUI (domyślny PIN):** `1234`
