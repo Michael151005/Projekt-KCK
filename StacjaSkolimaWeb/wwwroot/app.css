@@ -431,3 +431,94 @@ body {
     width: 100%;
     padding: 12px;
 }
+
+/* Panel kierownika i raport sprzedaży */
+.panel-title-magenta {
+    color: var(--skolima-magenta);
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 22px 18px;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+}
+
+.stat-value-cyan {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--skolima-cyan);
+    text-shadow: 0 0 12px var(--skolima-cyan-glow);
+}
+
+.stat-value-magenta {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--skolima-magenta);
+    text-shadow: 0 0 12px var(--skolima-magenta-glow);
+}
+
+.report-table-wrap {
+    overflow-x: auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.report-table th {
+    text-align: left;
+    padding: 12px 24px;
+    color: var(--skolima-cyan);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 700;
+}
+
+.report-table td {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    vertical-align: top;
+}
+
+.report-table tr:last-child td {
+    border-bottom: none;
+}
+
+.report-table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.payment-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: rgba(0, 240, 255, 0.12);
+    color: var(--skolima-cyan);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 16px;
+    color: var(--text-muted);
+}

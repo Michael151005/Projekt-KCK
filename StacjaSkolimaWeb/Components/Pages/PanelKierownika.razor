@@ -1,0 +1,344 @@
+<div class="animate-fade">
+    <!-- Górny nagłówek panelu kierownika -->
+    <div class="panel-header">
+        <div>
+            <h2 class="panel-title-magenta">👔 Panel Kierownika</h2>
+            <p class="panel-subtitle">Zarządzanie cennikiem stacji, podgląd raportów sprzedaży oraz ustawienia cen.</p>
+        </div>
+
+        <div class="tab-group">
+            <button class="@(aktywnaZakladka == "CenyPaliw" ? "btn-magenta" : "btn-ghost")" @onclick='() => aktywnaZakladka = "CenyPaliw"'>
+                ⛽ Ceny Paliw
+            </button>
+            <button class="@(aktywnaZakladka == "CenyProduktow" ? "btn-magenta" : "btn-ghost")" @onclick='() => aktywnaZakladka = "CenyProduktow"'>
+                🏷️ Ceny sklepu
+            </button>
+            <button class="@(aktywnaZakladka == "Raport" ? "btn-magenta" : "btn-ghost")" @onclick="OtworzRaport">
+                📊 Raport sprzedaży
+            </button>
+            <button class="@(aktywnaZakladka == "Haslo" ? "btn-magenta" : "btn-ghost")" @onclick='() => aktywnaZakladka = "Haslo"'>
+                🔑 Zmiana hasła
+            </button>
+        </div>
+    </div>
+
+    <!-- Zakładka 1: Zmiana cen paliw -->
+    @if (aktywnaZakladka == "CenyPaliw")
+    {
+        <div class="cards-grid animate-fade">
+            @foreach (var paliwo in paliwa)
+            {
+                decimal nowaCena = nowaCenaDlaPaliwa.GetValueOrDefault(paliwo.NazwaPaliwa, paliwo.CenaZaLitr);
+                
+                <div class="card">
+                    <div class="flex-between">
+                        <h3 class="text-cyan">@paliwo.NazwaPaliwa</h3>
+                        <span class="price-tag">@paliwo.CenaZaLitr.ToString("F2") zł/l</span>
+                    </div>
+
+                    <div class="stock-row">
+                        <span>Stan zbiornika: <strong>@paliwo.DostepnaIloscPaliwa.ToString("F2") l</strong></span>
+                    </div>
+
+                    <div class="delivery-form">
+                        <label class="delivery-label">Nowa cena za litr (zł):</label>
+                        <div class="delivery-controls">
+                            <input type="number" step="0.01" min="0.01" class="input-skolima input-compact" value="@nowaCena.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" @oninput="(e) => ZmienWartoscCenyPaliwa(paliwo.NazwaPaliwa, e.Value?.ToString())"/>
+                            <button class="btn-magenta btn-fill" disabled="@(nowaCena <= 0 || nowaCena == paliwo.CenaZaLitr)" @onclick="() => ZapiszCenePaliwa(paliwo)">
+                                Zapisz cenę
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Zakładka 2: Zmiana cen produktow sklepowych -->
+    @if (aktywnaZakladka == "CenyProduktow")
+    {
+        <div class="cards-grid animate-fade">
+            @foreach (var produkt in produkty)
+            {
+                decimal nowaCena = nowaCenaDlaProduktu.GetValueOrDefault(produkt.Nazwa, produkt.Cena);
+                
+                <div class="card">
+                    <div class="flex-between">
+                        <h3 class="text-cyan">@produkt.Nazwa</h3>
+                        <span class="price-tag">@produkt.Cena.ToString("F2") zł</span>
+                    </div>
+
+                    <div class="stock-row">
+                        <span>Stan na półce: <strong>@produkt.DostepnaIlosc szt.</strong></span>
+                    </div>
+
+                    <div class="delivery-form">
+                        <label class="delivery-label">Nowa cena produktu (zł):</label>
+                        <div class="delivery-controls">
+                            <input type="number" step="0.01" min="0.01" class="input-skolima input-compact" value="@nowaCena.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" @oninput="(e) => ZmienWartoscCenyProduktu(produkt.Nazwa, e.Value?.ToString())"/>
+                            <button class="btn-cyan btn-fill" disabled="@(nowaCena <= 0 || nowaCena == produkt.Cena)" @onclick="() => ZapiszCeneProduktu(produkt)">
+                                Zapisz cenę
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Zakładka 3: Raport sprzedaży -->
+    @if (aktywnaZakladka == "Raport")
+    {
+        decimal lacznyPrzychod = transakcje.Sum(t => t.Kwota);
+        decimal sprzedaneLitry = transakcje.SelectMany(t => t.Pozycje).Where(p => p.Jednostka == "l").Sum(p => p.Ilość);
+
+        <div class="animate-fade">
+            <!-- Kafelki podsumowania -->
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <div class="stat-label">Łączny przychód</div>
+                    <div class="stat-value-magenta">@lacznyPrzychod.ToString("F2") zł</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-label">Liczba transakcji</div>
+                    <div class="stat-value-cyan">@transakcje.Count</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-label">Sprzedane paliwo</div>
+                    <div class="stat-value-cyan">@sprzedaneLitry.ToString("F2") l</div>
+                </div>
+            </div>
+
+            <!-- Tabela historii transakcji -->
+            <div class="card report-table-wrap">
+                @if (transakcje.Count == 0)
+                {
+                    <div class="empty-state">
+                        <p>Brak zarejestrowanych transakcji w historii sprzedaży</p>
+                    </div>
+                }
+                else
+                {
+                    <h3 class="text-cyan mb-2">Historia wszystkich transakcji</h3>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Data i godzina</th>
+                                <th>Metoda płatności</th>
+                                <th>Zakupione pozycje</th>
+                                <th>Kwota</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var t in transakcje.OrderByDescending(x => x.DataTransakcji))
+                            {
+                                <tr>
+                                    <td class="text-muted">@t.DataTransakcji.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td><span class="payment-pill">@t.MetodaPlatnosci</span></td>
+                                    <td>
+                                        @foreach (var poz in t.Pozycje)
+                                        {
+                                            <div>@poz.Nazwa - @poz.Ilość @poz.Jednostka (@poz.Wartosc.ToString("F2") zł)</div>
+                                        }
+                                    </td>
+                                    <td class="text-magenta"><strong>@t.Kwota.ToString("F2") zł</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Zakładka 4: Zmiana hasła kierownika -->
+    @if (aktywnaZakladka == "Haslo")
+    {
+        <div class="card password-card animate-fade">
+            <h3 class="text-magenta mb-1">🔑 Zmiana hasła kierownika</h3>
+            <p class="panel-subtitle mb-2">
+                Wprowadź obecne hasło oraz ustaw nowe hasło dostępu do panelu kierownika.
+            </p>
+
+            <div class="form-group">
+                <label class="form-label">Obecne hasło:</label>
+                <input type="password" class="input-skolima" placeholder="Wpisz obecne hasło..." @bind="stareHaslo" @bind:event="oninput" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nowe hasło:</label>
+                <input type="password" class="input-skolima" placeholder="Wpisz nowe hasło..." @bind="noweHaslo" @bind:event="oninput" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Powtórz nowe hasło:</label>
+                <input type="password" class="input-skolima" placeholder="Powtórz nowe hasło..." @bind="potwierdzHaslo" @bind:event="oninput" @onkeydown="ObsluzKlawiszHasla"/>
+            </div>
+
+            @if (!string.IsNullOrEmpty(bladHasla))
+            {
+                <p class="form-error">@bladHasla</p>
+            }
+
+            <button class="btn-magenta btn-full" @onclick="ZmienHasloKierownika">
+                Zapisz nowe hasło
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<(string Tresc, bool Sukces)> OnPowiadomienie { get; set; }
+
+    // Współdzielone magazyny i historia
+    private MagazynPaliw magazynPaliw = WspolneMagazyny.Paliwa;
+    private MagazynProduktow magazynProduktow = WspolneMagazyny.Produkty;
+    private HistoriaTransakcji historia = new HistoriaTransakcji();
+
+    private List<Paliwo> paliwa = new List<Paliwo>();
+    private List<Produkt> produkty = new List<Produkt>();
+    private List<Transakcja> transakcje = new List<Transakcja>();
+
+    private string aktywnaZakladka = "CenyPaliw";
+    private Dictionary<string, decimal> nowaCenaDlaPaliwa = new();
+    private Dictionary<string, decimal> nowaCenaDlaProduktu = new();
+
+    // Stan zmiany hasła
+    private string stareHaslo = "";
+    private string noweHaslo = "";
+    private string potwierdzHaslo = "";
+    private string bladHasla = "";
+
+    protected override void OnInitialized()
+    {
+        paliwa = magazynPaliw.PobierzPaliwa();
+        produkty = magazynProduktow.PobierzProdukty();
+        transakcje = historia.PobierzTransakcje();
+
+        foreach (var p in paliwa)
+            nowaCenaDlaPaliwa[p.NazwaPaliwa] = p.CenaZaLitr;
+
+        foreach (var prod in produkty)
+            nowaCenaDlaProduktu[prod.Nazwa] = prod.Cena;
+    }
+
+    private void OtworzRaport()
+    {
+        transakcje = historia.PobierzTransakcje();
+        aktywnaZakladka = "Raport";
+    }
+
+    private void ZmienWartoscCenyPaliwa(string nazwaPaliwa, string? wartosc)
+    {
+        if (string.IsNullOrWhiteSpace(wartosc))
+        {
+            nowaCenaDlaPaliwa[nazwaPaliwa] = 0m;
+            return;
+        }
+
+        if (decimal.TryParse(wartosc, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal wynik) && wynik >= 0)
+        {
+            nowaCenaDlaPaliwa[nazwaPaliwa] = Math.Round(wynik, 2);
+        }
+    }
+
+    private void ZmienWartoscCenyProduktu(string nazwaProduktu, string? wartosc)
+    {
+        if (string.IsNullOrWhiteSpace(wartosc))
+        {
+            nowaCenaDlaProduktu[nazwaProduktu] = 0m;
+            return;
+        }
+
+        if (decimal.TryParse(wartosc, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal wynik) && wynik >= 0)
+        {
+            nowaCenaDlaProduktu[nazwaProduktu] = Math.Round(wynik, 2);
+        }
+    }
+
+    private async Task ZapiszCenePaliwa(Paliwo paliwo)
+    {
+        decimal nowaCena = nowaCenaDlaPaliwa.GetValueOrDefault(paliwo.NazwaPaliwa, 0m);
+
+        if (nowaCena <= 0)
+        {
+            await WyslijPowiadomienie("Cena paliwa musi być większa od zera!", false);
+            return;
+        }
+
+        paliwo.CenaZaLitr = nowaCena;
+        magazynPaliw.ZapiszPaliwa();
+
+        await WyslijPowiadomienie($"Zmieniono cenę {paliwo.NazwaPaliwa} na {nowaCena:F2} zł/l.", true);
+    }
+
+    private async Task ZapiszCeneProduktu(Produkt produkt)
+    {
+        decimal nowaCena = nowaCenaDlaProduktu.GetValueOrDefault(produkt.Nazwa, 0);
+
+        if (nowaCena <= 0)
+        {
+            await WyslijPowiadomienie("Cena produktu musi być większa od zera!", false);
+            return;
+        }
+
+        produkt.Cena = nowaCena;
+        magazynProduktow.ZapiszProdukty();
+
+        await WyslijPowiadomienie($"Zmieniono cenę {produkt.Nazwa} na {nowaCena:F2} zł", true);
+    }
+
+    private async Task ZmienHasloKierownika()
+    {
+        bladHasla = "";
+
+        if (string.IsNullOrWhiteSpace(stareHaslo) || string.IsNullOrWhiteSpace(noweHaslo) || string.IsNullOrWhiteSpace(potwierdzHaslo))
+        {
+            bladHasla = "Wypełnij wszystkie pola formularza!";
+            return;
+        }
+
+        if (!AutoryzacjaService.WeryfikujHaslo("Kierownik", stareHaslo))
+        {
+            bladHasla = "Obecne hasło jest nieprawidłowe!";
+            return;
+        }
+
+        if (noweHaslo == stareHaslo)
+        {
+            bladHasla = "Nowe hasło musi różnić sie od obecnego!";
+            return;
+        }
+
+        if (noweHaslo != potwierdzHaslo)
+        {
+            bladHasla = "Nowe hasło i jego potwierdzenie nie są identyczne!";
+            return;
+        }
+
+        AutoryzacjaService.ZmienHaslo("Kierownik", noweHaslo);
+
+        stareHaslo = "";
+        noweHaslo = "";
+        potwierdzHaslo = "";
+
+        await WyslijPowiadomienie("Hasło kierownika zostało pomyślnie zmienione!", true);
+    }
+
+    private async Task ObsluzKlawiszHasla(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await ZmienHasloKierownika();
+        }
+    }
+
+    private async Task WyslijPowiadomienie(string tresc, bool sukces)
+    {
+        if (OnPowiadomienie.HasDelegate)
+        {
+            await OnPowiadomienie.InvokeAsync((tresc, sukces));
+        }
+    }
+}
