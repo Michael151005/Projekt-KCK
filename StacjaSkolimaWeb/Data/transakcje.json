@@ -33,5 +33,19 @@
     "Kwota": 5.19,
     "MetodaPlatnosci": "BLIK",
     "DataTransakcji": "2026-11-26T06:43:40.9632361+01:00"
+  },
+  {
+    "Pozycje": [
+      {
+        "Nazwa": "PB 95",
+        "Ilo\u015B\u0107": 113311,
+        "CenaJednostkowa": 5.19,
+        "Jednostka": "l",
+        "Wartosc": 588084.09
+      }
+    ],
+    "Kwota": 588084.09,
+    "MetodaPlatnosci": "BLIK",
+    "DataTransakcji": "2026-11-27T19:45:34.8926937+01:00"
   }
 ]

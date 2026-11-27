@@ -1,0 +1,282 @@
+<div class="animate-fade">
+    <!-- Górny nagłówek panelu pracownika -->
+    <div class="panel-header">
+        <div>
+            <h2 class="panel-title">👷 Panel Pracownika</h2>
+            <p class="panel-subtitle">Podgląd stanów magazynowych oraz rejestracja nowych dostaw</p>
+        </div>
+
+        <div class="tab-group">
+            <button class="@(aktywnaZakladka == "Paliwa" ? "btn-magenta" : "btn-ghost")" @onclick='() => aktywnaZakladka = "Paliwa"'>
+                ⛽ Zbiorniki paliw (@paliwa.Count)
+            </button>
+            <button class="@(aktywnaZakladka == "Produkty" ? "btn-magenta" : "btn-ghost")" @onclick='() => aktywnaZakladka = "Produkty"'>
+                📦 Magazyn sklepu (@produkty.Count)
+            </button>
+            <button class="@(aktywnaZakladka == "Haslo" ? "btn-magenta" : "btn-ghost")" @onclick='() => aktywnaZakladka = "Haslo"'>
+                🔑 Zmiana hasła
+            </button>
+        </div>
+    </div>
+
+    <!-- Zakładka 1: Dostawa paliw -->
+    @if (aktywnaZakladka == "Paliwa")
+    {
+        <div class="cards-grid animate-fade">
+            @foreach (var paliwo in paliwa)
+            {
+                decimal dostawaLitry = dostawaDlaPaliwa.GetValueOrDefault(paliwo.NazwaPaliwa, 0m);
+                bool czyNiskiStan = paliwo.DostepnaIloscPaliwa < 500m;
+                double procentZbiornika = Math.Min(100, (double)(paliwo.DostepnaIloscPaliwa / 5000m * 100m));
+
+                <div class="card">
+                    <div class="flex-between">
+                        <h3 class="text-cyan">@paliwo.NazwaPaliwa</h3>
+                        <span class="price-tag">@paliwo.CenaZaLitr.ToString("F2") zł/l</span>
+                    </div>
+
+                    <div class="stock-row">
+                        <span>W zbiorniku: <strong>@paliwo.DostepnaIloscPaliwa.ToString("F2") L</strong></span>
+                        <span class="@(czyNiskiStan ? "badge-low" : "badge-ok")">
+                            @(czyNiskiStan ? "Niski stan!" : "Stan OK")
+                        </span>
+                    </div>
+
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: @procentZbiornika.ToString("F0", System.Globalization.CultureInfo.InvariantCulture)%;"></div>
+                    </div>
+
+                    <div class="delivery-form">
+                        <label class="delivery-label">Zamów dostawę paliwa (litry):</label>
+                        <div class="delivery-controls">
+                            <input type="number" step="50" min="0" class="input-skolima input-compact" value="@dostawaLitry.ToString(System.Globalization.CultureInfo.InvariantCulture)" @oninput="(e) => ZmienDostawePaliwa(paliwo.NazwaPaliwa, e.Value?.ToString())" />
+                            <button class="btn-cyan btn-fill" disabled="@(dostawaLitry <= 0)" @onclick="() => PrzyjmijDostawePaliwa(paliwo)">
+                                + Przyjmij dostawę
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Zakładka 2: Dostawy produktów sklepowych -->
+    @if (aktywnaZakladka == "Produkty")
+    {
+        <div class="cards-grid animate-fade">
+            @foreach (var produkt in produkty)
+            {
+                int dostawaSztuki = dostawaDlaProduktu.GetValueOrDefault(produkt.Nazwa, 0);
+                bool czyNiskiStan = produkt.DostepnaIlosc < 5;
+
+                <div class="card">
+                    <div class="flex-between">
+                        <h3>@produkt.Nazwa</h3>
+                        <span class="text-cyan"><strong>@produkt.Cena.ToString("F2") zł</strong></span>
+                    </div>
+
+                    <div class="stock-row">
+                        <span>Na magazynie: <strong>@produkt.DostepnaIlosc szt.</strong></span>
+                        <span class="@(czyNiskiStan ? "badge-low" : "badge-ok")">
+                            @(czyNiskiStan ? "Niski stan!" : "Stan OK")
+                        </span>
+                    </div>
+
+                    <div class="delivery-form">
+                        <label class="delivery-label">Uzupełnij towar (sztuki):</label>
+                        <div class="delivery-controls">
+                            <input type="number" step="1" min="0" class="input-skolima input-compact" value="@dostawaSztuki" @oninput="(e) => ZmienDostaweProduktu(produkt.Nazwa, e.Value?.ToString())" />
+                            <button class="btn-magenta btn-fill" disabled="@(dostawaSztuki <= 0)" @onclick="() => PrzyjmijDostaweProduktu(produkt)">
+                                + Dodaj na stan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Zakładka 3: Zmiana hasła pracownika -->
+    @if (aktywnaZakladka == "Haslo")
+    {
+        <div class="card password-card animate-fade">
+            <h3 class="text-cyan mb-1">🔑 Zmiana hasła pracownika</h3>
+            <p class="panel-subtitle mb-2">
+                Wprowadź obecne hasło oraz ustaw nowe hasło dostępu do panelu,
+            </p>
+
+            <div class="form-group">
+                <label class="form-label">Obecne hasło:</label>
+                <input type="password" class="input-skolima" placeholder="Wpisz obecne hasło..." @bind="stareHaslo" @bind:event="oninput" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nowe hasło:</label>
+                <input type="password" class="input-skolima" placeholder="Wpisz nowe hasło..." @bind="noweHaslo" @bind:event="oninput" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Powtórz nowe hasło:</label>
+                <input type="password" class="input-skolima" placeholder="Powtórz nowe hasło..." @bind="potwierdzHaslo" @bind:event="oninput" @onkeydown="ObsluzKlawiszHasla"/>
+            </div>
+
+            @if (!string.IsNullOrEmpty(bladHasla))
+            {
+                <p class="form-error">@bladHasla</p>
+            }
+
+            <button class="btn-magenta btn-full" @onclick="ZmienHasloPracownika">
+                Zapisz nowe hasło
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<(string Tresc, bool Sukces)> OnPowiadomienie { get; set; }
+
+    // Współdzielone magazyny
+    private MagazynPaliw magazynPaliw = WspolneMagazyny.Paliwa;
+    private MagazynProduktow magazynProduktow = WspolneMagazyny.Produkty;
+
+    private List<Paliwo> paliwa = new();
+    private List<Produkt> produkty = new();
+
+    private string aktywnaZakladka = "Paliwa";
+    private Dictionary<string, decimal> dostawaDlaPaliwa = new();
+    private Dictionary<string, int> dostawaDlaProduktu = new();
+
+    // Stan zmiany hasła
+    private string stareHaslo = "";
+    private string noweHaslo = "";
+    private string potwierdzHaslo = "";
+    private string bladHasla = "";
+
+    protected override void OnInitialized()
+    {
+        paliwa = magazynPaliw.PobierzPaliwa();
+        produkty = magazynProduktow.PobierzProdukty();
+
+        foreach (var p in paliwa)
+            dostawaDlaPaliwa[p.NazwaPaliwa] = 0m;
+
+        foreach (var prod in produkty)
+            dostawaDlaProduktu[prod.Nazwa] = 0;
+    }
+
+    private void ZmienDostawePaliwa(string nazwaPaliwa, string? wartosc)
+    {
+        if (string.IsNullOrWhiteSpace(wartosc))
+        {
+            dostawaDlaPaliwa[nazwaPaliwa] = 0m;
+            return;
+        }
+
+        if (decimal.TryParse(wartosc, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal wynik) && wynik >= 0)
+        {
+            dostawaDlaPaliwa[nazwaPaliwa] = Math.Round(wynik, 2);
+        }
+    }
+
+    private void ZmienDostaweProduktu(string nazwaProduktu, string? wartosc)
+    {
+        if (string.IsNullOrWhiteSpace(wartosc))
+        {
+            dostawaDlaProduktu[nazwaProduktu] = 0;
+            return;
+        }
+
+        if (int.TryParse(wartosc, out int wynik) && wynik >= 0)
+        {
+            dostawaDlaProduktu[nazwaProduktu] = wynik;
+        }
+    }
+
+    private async Task PrzyjmijDostawePaliwa(Paliwo paliwo)
+    {
+        decimal ilosc = dostawaDlaPaliwa.GetValueOrDefault(paliwo.NazwaPaliwa, 0m);
+
+        if (ilosc <= 0)
+        {
+            await WyslijPowiadomienie("Podaj dodatnią ilość litrów dostawy!", false);
+            return;
+        }
+
+        paliwo.DostepnaIloscPaliwa += ilosc;
+        magazynPaliw.ZapiszPaliwa();
+        dostawaDlaPaliwa[paliwo.NazwaPaliwa] = 0m;
+
+        await WyslijPowiadomienie($"Przyjęto dostawe: +{ilosc:F2} l ({paliwo.NazwaPaliwa}. Stan zapisany!)", true);
+    }
+
+    private async Task PrzyjmijDostaweProduktu(Produkt produkt)
+    {
+        int ilosc = dostawaDlaProduktu.GetValueOrDefault(produkt.Nazwa, 0);
+
+        if (ilosc <= 0)
+        {
+            await WyslijPowiadomienie("Podaj dodatnią liczbę sztuk dostawy!", false);
+            return;
+        }
+
+        produkt.DostepnaIlosc += ilosc;
+        magazynProduktow.ZapiszProdukty();
+        dostawaDlaProduktu[produkt.Nazwa] = 0;
+
+        await WyslijPowiadomienie($"Uzupełniono magazyn: +{ilosc} szt. ({produkt.Nazwa}).", true);
+    }
+
+    private async Task ZmienHasloPracownika()
+    {
+        bladHasla = "";
+
+        if (string.IsNullOrWhiteSpace(stareHaslo) || string.IsNullOrWhiteSpace(noweHaslo) || string.IsNullOrWhiteSpace(potwierdzHaslo))
+        {
+            bladHasla = "Wypełnij wszystkie pola formularza!";
+            return;
+        }
+
+        if (!AutoryzacjaService.WeryfikujHaslo("Pracownik", stareHaslo))
+        {
+            bladHasla = "Obecne hasło jest nieprawidłowe!";
+            return;
+        }
+
+        if (noweHaslo == stareHaslo)
+        {
+            bladHasla = "Nowe hasło musi różnić sie od obecnego!";
+            return;
+        }
+
+        if (noweHaslo != potwierdzHaslo)
+        {
+            bladHasla = "Nowe hasło i jego potwierdzenie nie są identyczne!";
+            return;
+        }
+
+        AutoryzacjaService.ZmienHaslo("Pracownik", noweHaslo);
+
+        stareHaslo = "";
+        noweHaslo = "";
+        potwierdzHaslo = "";
+
+        await WyslijPowiadomienie("Hasło pracownika zostało pomyślnie zmienione!", true);
+    }
+
+    private async Task ObsluzKlawiszHasla(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await ZmienHasloPracownika();
+        }
+    }
+
+    private async Task WyslijPowiadomienie(string tresc, bool sukces)
+    {
+        if (OnPowiadomienie.HasDelegate)
+        {
+            await OnPowiadomienie.InvokeAsync((tresc, sukces));
+        }
+    }
+}

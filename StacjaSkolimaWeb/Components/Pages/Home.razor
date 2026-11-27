@@ -33,10 +33,7 @@
     }
     else if (aktywnaRola == "Pracownik")
     {
-        <div class="card animate-fade">
-            <h2 style="color: var(--skolima-cyan); margin-bottom: 8px;">Panel Pracownika</h2>
-            <p style="color: var(--text-muted);">Zalogowano pomyślnie! Tutaj podepniemy stany magazynów i dostawy.</p>
-        </div>
+        <PanelPracownika OnPowiadomienie="ObsluzPowiadomienieKomponentu" />
     }
     else if (aktywnaRola == "Kierownik")
     {

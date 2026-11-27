@@ -298,8 +298,136 @@ body {
     gap: 10px;
 }
 
-.mt-1 { margin-top: 8px;}
-.mt-2 { margin-top: 16px;}
-.mt-3 { margin-top: 22px;}
-.mb-1 { margin-bottom: 8px;}
-.mb-2 { margin-bottom: 16px;}
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 22px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+
+/* Panel pracownika i wspólne klasy układu */
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.panel-title {
+    color: var(--skolima-cyan);
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+}
+
+.panel-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.tab-group {
+    display: flex;
+    gap: 10px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
+}
+
+.text-cyan { color: var(--skolima-cyan); }
+.text-magenta { color: var(--skolima-magenta); }
+.text-muted { color: var(--text-muted); }
+
+.price-tag {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--skolima-magenta);
+}
+
+.stock-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.badge-ok {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(0, 230, 118, 0.12);
+    color: var(--success);
+    border: 1px solid rgba(0, 230, 118, 0.35);
+}
+
+.badge-low {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(255, 51, 102, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(255, 51, 102, 0.4);
+}
+
+.delivery-form {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-color);
+}
+
+.delivery-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.delivery-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-compact {
+    width: 110px;
+    flex-shrink: 0;
+}
+
+.btn-fill {
+    flex: 1;
+}
+
+/* Formularze i zmiana hasła */
+.password-card {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.form-error {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+}
+
+.btn-full {
+    width: 100%;
+    padding: 12px;
+}
