@@ -31,8 +31,10 @@
                 @foreach (var paliwo in paliwa)
                 {
                     decimal litry = litryDlaPaliwa.GetValueOrDefault(paliwo.NazwaPaliwa, 0m);
+                    decimal wKoszyku = koszyk.PobierzPozycje().Where(p => p.Nazwa == paliwo.NazwaPaliwa && p.Jednostka == "l").Sum(p => p.Ilość);
+                    decimal dostepneDoTankowania = paliwo.DostepnaIloscPaliwa - wKoszyku;
                     decimal szacowanyKoszt = TankowanieService.ObliczKosztTankowania(litry, paliwo.CenaZaLitr);
-                    double procentZbiornika = Math.Min(100, (double)(paliwo.DostepnaIloscPaliwa / 5000m * 100m));
+                    double procentZbiornika = Math.Min(100, (double)(dostepneDoTankowania / 5000m * 100m));
 
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -43,7 +45,7 @@
                         </div>
 
                         <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">
-                            Dostępne w zbiorniku: <strong>@paliwo.DostepnaIloscPaliwa.ToString("F2") l</strong>
+                            Dostępne w zbiorniku: <strong>@dostepneDoTankowania.ToString("F2") l</strong>
                         </p>
 
                         <!-- Animowany pasek poziomu paliwa -->
@@ -56,7 +58,7 @@
                                 Ilość litrów do zatankowania:
                             </label>
                             <div style="display: flex; gap: 8px;">
-                                <input type="number" step="0.5" min="0" max="@paliwo.DostepnaIloscPaliwa" class="input-skolima" value="@litry.ToString(System.Globalization.CultureInfo.InvariantCulture)" @onchange="(e) => ZmienLitry(paliwo.NazwaPaliwa, e.Value?.ToString())" />
+                                <input type="number" step="0.5" min="0" max="@dostepneDoTankowania" class="input-skolima" value="@litry.ToString(System.Globalization.CultureInfo.InvariantCulture)" @oninput="(e) => ZmienLitry(paliwo.NazwaPaliwa, e.Value?.ToString())" />
                             </div>
                         </div>
 
@@ -64,7 +66,7 @@
                             <span>
                                 Koszt: <strong style="color: var(--text-main);">@szacowanyKoszt.ToString("F2") zł</strong>
                             </span>
-                            <button class="btn-magenta" disabled="@(paliwo.DostepnaIloscPaliwa <= 0 || litry <= 0)" @onclick="()=> ZatankujPaliwo(paliwo)">
+                            <button class="btn-magenta" disabled="@(dostepneDoTankowania <= 0 || litry <= 0)" @onclick="()=> ZatankujPaliwo(paliwo)">
                                 Zatankuj
                             </button>
                         </div>
@@ -94,7 +96,7 @@
                         </p>
 
                         <div style="display: flex; gap: 10px; align-items: center; margin-top: 16px;">
-                            <input type="number" min="0" max="@produkt.DostepnaIlosc" class="input-skolima" style="width: 90px;" value="@sztuki" @onchange="(e) => ZmienSztuki(produkt.Nazwa, e.Value?.ToString())" />
+                            <input type="number" min="0" max="@produkt.DostepnaIlosc" class="input-skolima" style="width: 90px;" value="@sztuki" @oninput="(e) => ZmienSztuki(produkt.Nazwa, e.Value?.ToString())" />
                             <button class="btn-cyan" style="flex: 1;" disabled="@(produkt.DostepnaIlosc <= 0 || sztuki <= 0)" @onclick="() => DodajProduktDoKoszyka(produkt)">
                                 + Do koszyka
                             </button>
@@ -393,6 +395,12 @@
 
     private void ZmienLitry(string nazwaPaliwa, string? wartosc)
     {
+        if (string.IsNullOrWhiteSpace(wartosc))
+        {
+            litryDlaPaliwa[nazwaPaliwa] = 0m;
+            return;
+        }
+
         if (decimal.TryParse(wartosc, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal wynik) && wynik >= 0)
         {
             litryDlaPaliwa[nazwaPaliwa] = Math.Round(wynik, 2);
@@ -401,6 +409,12 @@
 
     private void ZmienSztuki(string nazwaProduktu, string? wartosc)
     {
+        if (string.IsNullOrWhiteSpace(wartosc))
+        {
+            sztukiDlaProduktu[nazwaProduktu] = 0;
+            return;
+        }
+
         if (int.TryParse(wartosc, out int wynik) && wynik >= 0)
         {
             sztukiDlaProduktu[nazwaProduktu] = wynik;
@@ -410,26 +424,24 @@
     private async Task ZatankujPaliwo(Paliwo paliwo)
     {
         decimal iloscLitrow = litryDlaPaliwa.GetValueOrDefault(paliwo.NazwaPaliwa, 0m);
+        decimal iloscWKoszyku = koszyk.PobierzPozycje().Where(p => p.Nazwa == paliwo.NazwaPaliwa && p.Jednostka == "l").Sum(p => p.Ilość);
 
-        if (!TankowanieService.CzyMoznaZatankować(iloscLitrow, paliwo))
+        if (!TankowanieService.CzyMoznaZatankować(iloscLitrow, paliwo) || iloscWKoszyku + iloscLitrow > paliwo.DostepnaIloscPaliwa)
         {
             await WyslijPowiadomienie("Nie można zatankować podanej ilości paliwa!", false);
             return;
         }
 
-        if (TankowanieService.WykonajTankowanie(paliwo, iloscLitrow))
+        koszyk.DodajPozycje(new PozycjaKoszyka
         {
-            koszyk.DodajPozycje(new PozycjaKoszyka
-            {
-                Nazwa = paliwo.NazwaPaliwa,
-                Ilość = iloscLitrow,
-                CenaJednostkowa = paliwo.CenaZaLitr,
-                Jednostka = "l"
-            });
+            Nazwa = paliwo.NazwaPaliwa,
+            Ilość = iloscLitrow,
+            CenaJednostkowa = paliwo.CenaZaLitr,
+            Jednostka = "l"
+        });
 
-            magazynPaliw.ZapiszPaliwa();
-            await WyslijPowiadomienie($"Zatankowano {iloscLitrow:F2} l ({paliwo.NazwaPaliwa}) i dodano do koszyka!", true);
-        }
+        litryDlaPaliwa[paliwo.NazwaPaliwa] = 0m;
+        await WyslijPowiadomienie($"Zatankowano {iloscLitrow:F2} l ({paliwo.NazwaPaliwa}) i dodano do koszyka!", true);
     }
 
     private async Task DodajProduktDoKoszyka(Produkt produkt)
@@ -451,6 +463,7 @@
             Jednostka = "szt."
         });
 
+        sztukiDlaProduktu[produkt.Nazwa] = 0;
         await WyslijPowiadomienie($"Dodano do koszyka: {produkt.Nazwa} ({ilosc} szt.)", true);
     }
 
@@ -590,7 +603,16 @@
                     Jednostka = poz.Jednostka
                 });
 
-                if (poz.Jednostka == "szt.")
+                if (poz.Jednostka == "l")
+                {
+                    var pal = paliwa.FirstOrDefault(p => p.NazwaPaliwa.Equals(poz.Nazwa, StringComparison.OrdinalIgnoreCase));
+
+                    if (pal != null)
+                    {
+                        TankowanieService.WykonajTankowanie(pal, poz.Ilość);
+                    }
+                }
+                else if (poz.Jednostka == "szt.")
                 {
                     var prod = produkty.FirstOrDefault(p => p.Nazwa.Equals(poz.Nazwa, StringComparison.OrdinalIgnoreCase));
 
@@ -601,6 +623,7 @@
                 }
             }
 
+            magazynPaliw.ZapiszPaliwa();
             magazynProduktow.ZapiszProdukty();
             historia.DodajTransakcje(transakcja);
             koszyk.WyczyscKoszyk();
